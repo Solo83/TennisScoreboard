@@ -19,13 +19,15 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     public Optional<Player> getPlayer(String playerName) {
         Optional<Player> player = Optional.empty();
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             Query<Player> query = session.createQuery("from Player where name = :playerName", Player.class);
             query.setParameter("playerName", playerName);
             player = Optional.of(query.getSingleResult());
             log.info("Extracted player: {}", player.get());
             transaction.commit();
+            session.close();
         } catch (Exception e) {
             log.error("Error while getting player:", e);
             if (transaction != null) {
@@ -39,12 +41,14 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     public List<Player> getAllPlayers() {
         Transaction transaction = null;
         List<Player> players = new ArrayList<>();
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             Query<Player> query = session.createQuery("from Player", Player.class);
             players = query.getResultList();
             log.info("Extracted players: {}", players);
             transaction.commit();
+            session.close();
         } catch (Exception e) {
             log.error("Error while getting players:", e);
             if (transaction != null) {
@@ -58,12 +62,14 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     public Optional<Player> addPlayer(Player player) {
         Optional<Player> addedPlayer = Optional.empty();
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             session.persist(player);
-            addedPlayer = Optional.of(session.get(Player.class, player.getId()));
-            log.info("Added player: {}", addedPlayer.get());
             transaction.commit();
+            addedPlayer = Optional.of(player);
+            log.info("Added player: {}", addedPlayer.get());
+            session.close();
         } catch (Exception e) {
             log.error("Error while adding player:", e);
             if (transaction != null) {
