@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface PlayerRepository {
     Optional<Player> getPlayer(String playerName);
     List<Player> getAllPlayers();
+    Optional<Player> addPlayer(Player player);
 }

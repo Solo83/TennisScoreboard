@@ -53,4 +53,23 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         }
         return players;
     }
+
+    @Override
+    public Optional<Player> addPlayer(Player player) {
+        Optional<Player> addedPlayer = Optional.empty();
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.persist(player);
+            addedPlayer = Optional.of(session.get(Player.class, player.getId()));
+            log.info("Added player: {}", addedPlayer.get());
+            transaction.commit();
+        } catch (Exception e) {
+            log.error("Error while adding player:", e);
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+        return addedPlayer;
+    }
 }
