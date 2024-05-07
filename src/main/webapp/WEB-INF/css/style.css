@@ -22,6 +22,12 @@ body {
     height: 100%;
 }
 
+#error{
+    color: red;
+    text-align: left;
+    font-size: small;
+}
+
 #content{
 
     a { color: #2353b3;
