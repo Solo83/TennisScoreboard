@@ -29,7 +29,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             transaction.commit();
             session.close();
         } catch (Exception e) {
-            log.error("Error while getting player:", e);
+            log.error("Error while getting player: {}", e.getMessage());
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -50,7 +50,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             transaction.commit();
             session.close();
         } catch (Exception e) {
-            log.error("Error while getting players:", e);
+            log.error("Error while getting players: {}", e.getMessage());
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -71,7 +71,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             log.info("Added player: {}", addedPlayer.get());
             session.close();
         } catch (Exception e) {
-            log.error("Error while adding player:", e);
+            log.error("Error while adding player: {}", e.getMessage());
             if (transaction != null) {
                 transaction.rollback();
             }
