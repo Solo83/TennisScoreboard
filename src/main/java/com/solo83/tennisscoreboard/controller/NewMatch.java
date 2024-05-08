@@ -6,14 +6,15 @@ import java.util.Map;
 
 import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.repository.PlayerRepositoryImpl;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @WebServlet(value = "/new-match")
 public class NewMatch extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(NewMatch.class);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {

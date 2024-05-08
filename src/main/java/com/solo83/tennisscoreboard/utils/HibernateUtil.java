@@ -1,17 +1,17 @@
 package com.solo83.tennisscoreboard.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+
+@Slf4j
 public class HibernateUtil {
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
-    private static final Logger log = LoggerFactory.getLogger(HibernateUtil.class);
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
