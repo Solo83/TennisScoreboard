@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlayerRepository {
-    Optional<Player> getPlayer(String playerName) throws RepositoryException;
+    Optional<Player> getPlayerByName(String playerName) throws RepositoryException;
     List<Player> getAllPlayers() throws RepositoryException;
     Optional<Player> addPlayer(Player player) throws RepositoryException;
 }

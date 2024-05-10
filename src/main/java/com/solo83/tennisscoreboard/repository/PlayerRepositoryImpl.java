@@ -14,25 +14,31 @@ import java.util.Optional;
 
 public class PlayerRepositoryImpl implements PlayerRepository {
     private static final Logger log = LoggerFactory.getLogger(PlayerRepositoryImpl.class);
+    private static PlayerRepositoryImpl instance;
+
+    private PlayerRepositoryImpl() {
+    }
+
+    public static PlayerRepositoryImpl getInstance() {
+        if (instance == null) {
+            instance = new PlayerRepositoryImpl();
+        }
+        return instance;
+    }
 
     @Override
-    public Optional<Player> getPlayer(String playerName) throws RepositoryException {
+    public Optional<Player> getPlayerByName(String playerName) throws RepositoryException {
         Optional<Player> player;
-        Transaction transaction = null;
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             Query<Player> query = session.createQuery("from Player where name = :playerName", Player.class);
             query.setParameter("playerName", playerName);
             player = Optional.of(query.getSingleResult());
             log.info("Extracted player: {}", player.get());
             transaction.commit();
-            session.close();
         } catch (Exception e) {
             log.error("Error while getting player:", e);
-            if (transaction != null) {
-                transaction.rollback();
-            }
             throw new RepositoryException(e.getMessage());
         }
         return player;
@@ -40,21 +46,16 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public List<Player> getAllPlayers() throws RepositoryException {
-        Transaction transaction = null;
+        Transaction transaction;
         List<Player> players;
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             Query<Player> query = session.createQuery("from Player", Player.class);
             players = query.getResultList();
             log.info("Extracted players: {}", players);
             transaction.commit();
-            session.close();
         } catch (Exception e) {
             log.error("Error while getting players:", e);
-            if (transaction != null) {
-                transaction.rollback();
-            }
             throw new RepositoryException(e.getMessage());
         }
         return players;
@@ -64,14 +65,12 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     public Optional<Player> addPlayer(Player player) throws RepositoryException {
         Optional<Player> addedPlayer;
         Transaction transaction = null;
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
             transaction = session.beginTransaction();
             session.persist(player);
             transaction.commit();
             addedPlayer = Optional.of(player);
             log.info("Added player: {}", addedPlayer.get());
-            session.close();
         } catch (Exception e) {
             log.error("Error while adding player:", e);
             if (transaction != null) {

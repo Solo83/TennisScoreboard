@@ -1,23 +1,25 @@
 package com.solo83.tennisscoreboard.controller;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
-
 
 import com.solo83.tennisscoreboard.entity.Player;
-import com.solo83.tennisscoreboard.repository.PlayerRepositoryImpl;
+import com.solo83.tennisscoreboard.service.PlayerService;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
 import com.solo83.tennisscoreboard.utils.validator.Expressions;
 import com.solo83.tennisscoreboard.utils.validator.ParameterValidator;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(value = "/new-match")
 public class NewMatch extends HttpServlet {
-    PlayerRepositoryImpl playerRepository = new PlayerRepositoryImpl();
+    PlayerService playerService = PlayerService.getInstance();
     ParameterValidator parameterValidator = new ParameterValidator();
 
     @Override
@@ -33,11 +35,8 @@ public class NewMatch extends HttpServlet {
             String firstPlayerName = req.getParameter("player1name");
             String secondPlayerName = req.getParameter("player2name");
 
-            Player player1 = new Player(firstPlayerName);
-            Player player2 = new Player(secondPlayerName);
-
-            Optional<Player> player1Optional = playerRepository.addPlayer(player1);
-            Optional<Player> player2Optional = playerRepository.addPlayer(player2);
+            playerService.savePlayer(new Player(firstPlayerName));
+            playerService.savePlayer(new Player(secondPlayerName));
 
         } catch (ValidatorException | RepositoryException e) {
             req.setAttribute("error", e.getMessage());
