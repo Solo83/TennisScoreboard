@@ -11,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class ParameterValidatorTest {
+class PlayerNameValidatorTest {
 
     HttpServletRequest request = mock(HttpServletRequest.class);
-    ParameterValidator validator = new ParameterValidator();
+    PlayerNameValidator validator = new PlayerNameValidator();
 
     @Test
     void PlayerName_WithTwoWords_ShouldPassValidation () throws ValidatorException {
@@ -24,7 +24,7 @@ class ParameterValidatorTest {
             }
         });
 
-        assertTrue(validator.validate(request.getParameterMap(),"player1",Expressions.PLAYER_PATTERN));
+        assertTrue(validator.validate(request.getParameterMap(),"player1"));
 
     }
 
@@ -37,6 +37,6 @@ class ParameterValidatorTest {
         });
 
         Assertions.assertThrows(ValidatorException.class,
-                () -> validator.validate(request.getParameterMap(),"player2",Expressions.PLAYER_PATTERN));
+                () -> validator.validate(request.getParameterMap(),"player2"));
     }
 }

@@ -7,8 +7,7 @@ import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.service.PlayerService;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
-import com.solo83.tennisscoreboard.utils.validator.Expressions;
-import com.solo83.tennisscoreboard.utils.validator.ParameterValidator;
+import com.solo83.tennisscoreboard.utils.validator.PlayerNameValidator;
 import jakarta.servlet.ServletException;
 
 
@@ -20,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(value = "/new-match")
 public class NewMatch extends HttpServlet {
     PlayerService playerService = PlayerService.getInstance();
-    ParameterValidator parameterValidator = new ParameterValidator();
+    PlayerNameValidator playerNameValidator = new PlayerNameValidator();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,8 +28,8 @@ public class NewMatch extends HttpServlet {
 
         try {
 
-            parameterValidator.validate(parameterMap, "player1name", Expressions.PLAYER_PATTERN);
-            parameterValidator.validate(parameterMap, "player2name", Expressions.PLAYER_PATTERN);
+            playerNameValidator.validate(parameterMap, "player1name");
+            playerNameValidator.validate(parameterMap, "player2name");
 
             String firstPlayerName = req.getParameter("player1name");
             String secondPlayerName = req.getParameter("player2name");
