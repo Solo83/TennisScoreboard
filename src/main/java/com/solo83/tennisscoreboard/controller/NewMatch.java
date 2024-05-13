@@ -3,8 +3,9 @@ package com.solo83.tennisscoreboard.controller;
 import java.io.IOException;
 import java.util.Map;
 
-import com.solo83.tennisscoreboard.entity.Player;
+import com.solo83.tennisscoreboard.dto.PlayerDTO;
 import com.solo83.tennisscoreboard.service.PlayerService;
+import com.solo83.tennisscoreboard.service.PlayerServiceImpl;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
 import com.solo83.tennisscoreboard.utils.validator.PlayerNameValidator;
@@ -18,8 +19,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(value = "/new-match")
 public class NewMatch extends HttpServlet {
-    PlayerService playerService = PlayerService.getInstance();
-    PlayerNameValidator playerNameValidator = new PlayerNameValidator();
+    private final PlayerService playerService = PlayerServiceImpl.getInstance();
+    private final PlayerNameValidator playerNameValidator = new PlayerNameValidator();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,8 +35,11 @@ public class NewMatch extends HttpServlet {
             String firstPlayerName = req.getParameter("player1name");
             String secondPlayerName = req.getParameter("player2name");
 
-            playerService.savePlayer(new Player(firstPlayerName));
-            playerService.savePlayer(new Player(secondPlayerName));
+            PlayerDTO player1 = new PlayerDTO(firstPlayerName);
+            PlayerDTO player2 = new PlayerDTO(secondPlayerName);
+
+            playerService.create(player1);
+            playerService.create(player2);
 
         } catch (ValidatorException | RepositoryException e) {
             req.setAttribute("error", e.getMessage());
