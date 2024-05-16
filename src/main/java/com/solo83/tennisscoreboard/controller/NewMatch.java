@@ -3,7 +3,7 @@ package com.solo83.tennisscoreboard.controller;
 import java.io.IOException;
 import java.util.Map;
 
-import com.solo83.tennisscoreboard.dto.PlayerDTO;
+import com.solo83.tennisscoreboard.dto.GetPlayerRequestDTO;
 import com.solo83.tennisscoreboard.service.PlayerService;
 import com.solo83.tennisscoreboard.service.PlayerServiceImpl;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
@@ -35,8 +35,8 @@ public class NewMatch extends HttpServlet {
             String firstPlayerName = req.getParameter("player1name");
             String secondPlayerName = req.getParameter("player2name");
 
-            PlayerDTO player1 = new PlayerDTO(firstPlayerName);
-            PlayerDTO player2 = new PlayerDTO(secondPlayerName);
+            GetPlayerRequestDTO player1 = new GetPlayerRequestDTO(firstPlayerName);
+            GetPlayerRequestDTO player2 = new GetPlayerRequestDTO(secondPlayerName);
 
             playerService.create(player1);
             playerService.create(player2);

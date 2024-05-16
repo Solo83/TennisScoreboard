@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface PlayerRepository {
     Optional<Player> getPlayerByName(String playerName) throws RepositoryException;
     List<Player> getAllPlayers() throws RepositoryException;
-    Optional<Player> addPlayer(Player player) throws RepositoryException;
+    Optional<Player> save(Player player) throws RepositoryException;
 }

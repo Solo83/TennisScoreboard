@@ -1,9 +1,9 @@
 package com.solo83.tennisscoreboard.dto;
 
-public class PlayerDTO {
+public class GetPlayerRequestDTO {
     private final String name;
 
-    public PlayerDTO(String name) {
+    public GetPlayerRequestDTO(String name) {
         this.name = name;
     }
 

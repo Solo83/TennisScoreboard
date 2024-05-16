@@ -3,6 +3,7 @@ package com.solo83.tennisscoreboard.repository;
 import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -62,22 +63,26 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    public Optional<Player> addPlayer(Player player) throws RepositoryException {
+    @Transactional
+    public Optional<Player>save(Player player) throws RepositoryException {
         Optional<Player> addedPlayer;
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()){
-            transaction = session.beginTransaction();
-            session.persist(player);
-            transaction.commit();
-            addedPlayer = Optional.of(player);
-            log.info("Added player: {}", addedPlayer.get());
-        } catch (Exception e) {
-            log.error("Error while adding player:", e);
-            if (transaction != null) {
-                transaction.rollback();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            try {
+                transaction = session.beginTransaction();
+                session.persist(player);
+                transaction.commit();
+                addedPlayer = Optional.of(player);
+                log.info("Added player: {}", addedPlayer.get());
+            } catch (Exception e) {
+                log.error("Error while adding player:", e);
+                if (transaction != null) {
+                    transaction.rollback();
+                    log.info("Transaction is {}", transaction.getStatus());
+                }
+                throw new RepositoryException(e.getMessage());
             }
-            throw new RepositoryException(e.getMessage());
+            return addedPlayer;
         }
-        return addedPlayer;
     }
 }
