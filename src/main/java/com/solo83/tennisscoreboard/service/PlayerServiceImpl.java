@@ -5,9 +5,11 @@ import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.repository.PlayerRepository;
 import com.solo83.tennisscoreboard.repository.PlayerRepositoryImpl;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Slf4j
 public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository = PlayerRepositoryImpl.getInstance();
     private static PlayerServiceImpl instance;
@@ -25,7 +27,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     public Optional<Player> create(GetPlayerRequestDTO getPlayerRequestDTO) throws RepositoryException {
         Player player = mapper.toPlayer(getPlayerRequestDTO);
-        return playerRepository.save(player);
+        Optional<Player> savedPlayer = playerRepository.save(player);
+        log.info("Player saved: {}", savedPlayer);
+        return savedPlayer;
     }
 
 }

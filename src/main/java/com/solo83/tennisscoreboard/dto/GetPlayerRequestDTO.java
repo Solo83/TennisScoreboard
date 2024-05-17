@@ -1,5 +1,8 @@
 package com.solo83.tennisscoreboard.dto;
 
+import lombok.Data;
+
+@Data
 public class GetPlayerRequestDTO {
     private final String name;
 
@@ -7,7 +10,4 @@ public class GetPlayerRequestDTO {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
 }
