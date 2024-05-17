@@ -4,16 +4,18 @@ import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class PlayerRepositoryImpl implements PlayerRepository {
+
     private static final Logger log = LoggerFactory.getLogger(PlayerRepositoryImpl.class);
     private static PlayerRepositoryImpl instance;
 
@@ -56,8 +58,10 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             log.info("Extracted players: {}", players);
             transaction.commit();
         } catch (Exception e) {
+
             log.error("Error while getting players:", e);
             throw new RepositoryException(e.getMessage());
+
         }
         return players;
     }
