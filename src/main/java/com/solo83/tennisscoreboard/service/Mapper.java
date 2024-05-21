@@ -1,16 +1,16 @@
 package com.solo83.tennisscoreboard.service;
 
-import com.solo83.tennisscoreboard.dto.GetPlayerRequestDTO;
+import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
 import com.solo83.tennisscoreboard.entity.Player;
 
 public class Mapper {
-    public GetPlayerRequestDTO toDto(Player player) {
+    public GetPlayerRequest toDto(Player player) {
         String name = player.getName();
 
-        return new GetPlayerRequestDTO(name);
+        return new GetPlayerRequest(name);
     }
 
-    public Player toPlayer(GetPlayerRequestDTO getPlayerRequestDTO) {
-        return new Player(getPlayerRequestDTO.getName());
+    public Player toPlayer(GetPlayerRequest getPlayerRequest) {
+        return new Player(getPlayerRequest.name());
     }
 }

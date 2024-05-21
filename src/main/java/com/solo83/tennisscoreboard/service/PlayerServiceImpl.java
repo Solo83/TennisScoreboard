@@ -1,6 +1,6 @@
 package com.solo83.tennisscoreboard.service;
 
-import com.solo83.tennisscoreboard.dto.GetPlayerRequestDTO;
+import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
 import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.repository.PlayerRepository;
 import com.solo83.tennisscoreboard.repository.PlayerRepositoryImpl;
@@ -25,8 +25,8 @@ public class PlayerServiceImpl implements PlayerService {
         return instance;
     }
 
-    public Optional<Player> create(GetPlayerRequestDTO getPlayerRequestDTO) throws RepositoryException {
-        Player player = mapper.toPlayer(getPlayerRequestDTO);
+    public Optional<Player> create(GetPlayerRequest getPlayerRequest) throws RepositoryException {
+        Player player = mapper.toPlayer(getPlayerRequest);
         Optional<Player> savedPlayer = playerRepository.save(player);
         log.info("Player saved: {}", savedPlayer);
         return savedPlayer;
