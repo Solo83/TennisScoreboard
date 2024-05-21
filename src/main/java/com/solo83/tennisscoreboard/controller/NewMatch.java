@@ -3,21 +3,14 @@ package com.solo83.tennisscoreboard.controller;
 import java.io.IOException;
 import java.util.Map;
 
-import com.solo83.tennisscoreboard.dto.GetPlayerRequestDTO;
+import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
 import com.solo83.tennisscoreboard.service.PlayerService;
 import com.solo83.tennisscoreboard.service.PlayerServiceImpl;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
 import com.solo83.tennisscoreboard.utils.validator.PlayerNameValidator;
+
 import jakarta.servlet.ServletException;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import com.solo83.tennisscoreboard.entity.Player;
-import com.solo83.tennisscoreboard.repository.PlayerRepositoryImpl;
-
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +26,7 @@ public class NewMatch extends HttpServlet {
     private final PlayerNameValidator playerNameValidator = new PlayerNameValidator();
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         Map<String, String[]> parameterMap = req.getParameterMap();
 
@@ -42,16 +35,21 @@ public class NewMatch extends HttpServlet {
             playerNameValidator.validate(parameterMap, "player1name");
             playerNameValidator.validate(parameterMap, "player2name");
 
+            log.info("Players names corrected and validated");
+
             String firstPlayerName = req.getParameter("player1name");
             String secondPlayerName = req.getParameter("player2name");
 
-            GetPlayerRequestDTO player1 = new GetPlayerRequestDTO(firstPlayerName);
-            GetPlayerRequestDTO player2 = new GetPlayerRequestDTO(secondPlayerName);
+            GetPlayerRequest player1 = new GetPlayerRequest(firstPlayerName);
+            GetPlayerRequest player2 = new GetPlayerRequest(secondPlayerName);
 
             playerService.create(player1);
             playerService.create(player2);
 
+            log.info("New Players are created");
+
         } catch (ValidatorException | RepositoryException e) {
+            log.error(e.getMessage());
             req.setAttribute("error", e.getMessage());
             req.getRequestDispatcher("new_match.jsp").forward(req, resp);
         }

@@ -1,13 +1,15 @@
 package com.solo83.tennisscoreboard.service;
 
-import com.solo83.tennisscoreboard.dto.GetPlayerRequestDTO;
+import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
 import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.repository.PlayerRepository;
 import com.solo83.tennisscoreboard.repository.PlayerRepositoryImpl;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Slf4j
 public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository = PlayerRepositoryImpl.getInstance();
     private static PlayerServiceImpl instance;
@@ -23,9 +25,11 @@ public class PlayerServiceImpl implements PlayerService {
         return instance;
     }
 
-    public Optional<Player> create(GetPlayerRequestDTO getPlayerRequestDTO) throws RepositoryException {
-        Player player = mapper.toPlayer(getPlayerRequestDTO);
-        return playerRepository.save(player);
+    public Optional<Player> create(GetPlayerRequest getPlayerRequest) throws RepositoryException {
+        Player player = mapper.toPlayer(getPlayerRequest);
+        Optional<Player> savedPlayer = playerRepository.save(player);
+        log.info("Player saved: {}", savedPlayer);
+        return savedPlayer;
     }
 
 }

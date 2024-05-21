@@ -1,9 +1,11 @@
 package com.solo83.tennisscoreboard.utils.validator;
 import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class PlayerNameValidator {
 
     private final String PLAYER_PATTERN = "^[A-Za-z]+ [A-Za-z]+$";
@@ -14,15 +16,18 @@ public class PlayerNameValidator {
         String[] parameterValues = parameterMap.get(parameterName);
 
         if (parameterValues == null || parameterValues.length == 0) {
+            log.error("Parameter is missing in request");
             throw new ValidatorException("Required parameter '" + parameterName + "' is missing");
         }
 
         String parameterValue = parameterValues[0];
 
         if (parameterValue.trim().isEmpty() || !pattern.matcher(parameterValue).find()) {
+            log.error("Parameter value for {} is not valid", parameterName);
             throw new ValidatorException("Value '" + parameterValue + "' is not valid for '" + parameterName + "'");
         }
 
+        log.info("Parameter value is VALID for {}", parameterName);
         return true;
     }
 
