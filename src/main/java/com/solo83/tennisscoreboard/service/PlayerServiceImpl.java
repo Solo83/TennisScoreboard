@@ -32,4 +32,16 @@ public class PlayerServiceImpl implements PlayerService {
         return savedPlayer;
     }
 
+    @Override
+    public Optional<Player> get(GetPlayerRequest getPlayerRequest) {
+        Player player = mapper.toPlayer(getPlayerRequest);
+        Optional<Player> currentPlayer;
+        try {
+            currentPlayer = playerRepository.getPlayerByName(player.getName());
+        } catch (RepositoryException e) {
+            currentPlayer = Optional.empty();
+        }
+        log.info("Current player: {}", currentPlayer.orElse(null));
+        return currentPlayer;
+    }
 }

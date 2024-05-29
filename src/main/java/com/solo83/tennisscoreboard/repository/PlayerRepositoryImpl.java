@@ -41,7 +41,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             transaction.commit();
         } catch (Exception e) {
             log.error("Error while getting player:", e);
-            throw new RepositoryException(e.getMessage());
+            throw new RepositoryException("Error while getting player by Name");
         }
         return player;
     }
@@ -58,7 +58,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             transaction.commit();
         } catch (Exception e) {
             log.error("Error while getting players:", e);
-            throw new RepositoryException(e.getMessage());
+            throw new RepositoryException("Error while getting players");
 
         }
         return players;
@@ -82,7 +82,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                     transaction.rollback();
                     log.info("Transaction is {}", transaction.getStatus());
                 }
-                throw new RepositoryException(e.getMessage());
+                throw new RepositoryException("Error while adding player");
             }
             return addedPlayer;
         }

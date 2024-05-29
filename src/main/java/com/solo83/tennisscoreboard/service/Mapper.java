@@ -6,7 +6,6 @@ import com.solo83.tennisscoreboard.entity.Player;
 public class Mapper {
     public GetPlayerRequest toDto(Player player) {
         String name = player.getName();
-
         return new GetPlayerRequest(name);
     }
 

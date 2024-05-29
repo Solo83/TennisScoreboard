@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface PlayerService {
     Optional<Player> create(GetPlayerRequest getPlayerRequest) throws RepositoryException;
+    Optional<Player> get(GetPlayerRequest getPlayerRequest) throws RepositoryException;
 }

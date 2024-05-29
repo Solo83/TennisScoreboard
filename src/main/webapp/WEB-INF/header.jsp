@@ -4,8 +4,8 @@
 
 <div id="header">
     <a href="index.jsp">HOME</a>
-    <a href="new_match.jsp">NEW</a>
-    <a href="/contacts">MATCHES</a>
+    <a href="new-match.jsp">NEW</a>
+    <a href="">MATCHES</a>
 </div>
 
 </body>
