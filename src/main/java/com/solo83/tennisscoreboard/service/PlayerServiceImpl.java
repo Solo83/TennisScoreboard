@@ -25,23 +25,17 @@ public class PlayerServiceImpl implements PlayerService {
         return instance;
     }
 
-    public Optional<Player> create(GetPlayerRequest getPlayerRequest) throws RepositoryException {
-        Player player = mapper.toPlayer(getPlayerRequest);
-        Optional<Player> savedPlayer = playerRepository.save(player);
-        log.info("Player saved: {}", savedPlayer);
-        return savedPlayer;
-    }
 
     @Override
-    public Optional<Player> get(GetPlayerRequest getPlayerRequest) {
+    public Optional<Player> createOrGet(GetPlayerRequest getPlayerRequest) throws RepositoryException {
         Player player = mapper.toPlayer(getPlayerRequest);
         Optional<Player> currentPlayer;
         try {
             currentPlayer = playerRepository.getPlayerByName(player.getName());
         } catch (RepositoryException e) {
-            currentPlayer = Optional.empty();
+            currentPlayer = playerRepository.save(player);
         }
-        log.info("Current player: {}", currentPlayer.orElse(null));
+        log.info("Existing player: {}", currentPlayer.orElse(null));
         return currentPlayer;
     }
 }

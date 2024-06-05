@@ -12,4 +12,5 @@ public class Mapper {
     public Player toPlayer(GetPlayerRequest getPlayerRequest) {
         return new Player(getPlayerRequest.name());
     }
+
 }

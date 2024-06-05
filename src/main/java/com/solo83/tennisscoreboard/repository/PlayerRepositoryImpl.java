@@ -3,7 +3,6 @@ package com.solo83.tennisscoreboard.repository;
 import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Session;
@@ -65,7 +64,6 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    @Transactional
     public Optional<Player>save(Player player) throws RepositoryException {
         Optional<Player> addedPlayer;
         Transaction transaction = null;

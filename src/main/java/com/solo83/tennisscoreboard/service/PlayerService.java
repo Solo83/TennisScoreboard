@@ -7,6 +7,5 @@ import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import java.util.Optional;
 
 public interface PlayerService {
-    Optional<Player> create(GetPlayerRequest getPlayerRequest) throws RepositoryException;
-    Optional<Player> get(GetPlayerRequest getPlayerRequest) throws RepositoryException;
+    Optional<Player> createOrGet(GetPlayerRequest getPlayerRequest) throws RepositoryException;
 }

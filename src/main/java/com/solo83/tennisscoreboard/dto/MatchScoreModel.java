@@ -8,4 +8,6 @@ public class MatchScoreModel {
     private Match match;
     private PlayerScore firstPlayerScore;
     private PlayerScore secondPlayerScore;
+    private boolean isDraw;
+    private boolean isTieBreak;
 }

@@ -25,7 +25,14 @@ body {
     color: white;
     align-self: center;
     text-align: center;
+}
 
+#finish_table{
+
+    color: white;
+    align-self: center;
+    text-align: center;
+    border-spacing: 10px;
 }
 
 #error{
@@ -37,7 +44,7 @@ body {
 #content{
 
     a { color: #2353b3;
-        font-size: large;
+        font-size: medium;
         font-weight: bold;
         text-decoration: none;
     }
