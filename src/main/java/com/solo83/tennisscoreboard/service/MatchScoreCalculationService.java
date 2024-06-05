@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -17,8 +16,6 @@ public class MatchScoreCalculationService {
 
     private final List<Integer> TENNIS_POINTS = Arrays.asList(0, 15, 30, 40, -1);
     private final int POINTS_DIFFERENCE = 2;
-    private boolean isTieBreak = false;
-    private boolean isDraw = false;
 
     private MatchScoreCalculationService() {
     }
@@ -36,6 +33,9 @@ public class MatchScoreCalculationService {
         Integer firstPlayerID = match.getFirstPlayer().getId();
         PlayerScore firstPlayerScore = matchScoreModel.getFirstPlayerScore();
         PlayerScore secondPlayerScore = matchScoreModel.getSecondPlayerScore();
+        boolean isTieBreak = matchScoreModel.isTieBreak();
+        boolean isDraw = matchScoreModel.isDraw();
+
 
         if (checkMatchWinner(firstPlayerScore, secondPlayerScore, matchScoreModel)) {
             log.info("Match finished");
@@ -96,7 +96,6 @@ public class MatchScoreCalculationService {
                 secondPlayerScore.setGame(secondPlayerScore.getGame() + 1);
             }
             setZeroPoints(matchScoreModel);
-            isDraw = false;
             matchScoreModel.setDraw(false);
         }
     }
@@ -105,6 +104,7 @@ public class MatchScoreCalculationService {
         int player1games = firstPlayerScore.getGame();
         int player2games = secondPlayerScore.getGame();
         int gamesDifference = player1games - player2games;
+        boolean isTieBreak = matchScoreModel.isTieBreak();
 
         int TOTAL_GAMES = 6;
         if (!isTieBreak && player1games == TOTAL_GAMES && player2games == TOTAL_GAMES) {
@@ -145,7 +145,6 @@ public class MatchScoreCalculationService {
             }
             setZeroGames(matchScoreModel);
             setZeroPoints(matchScoreModel);
-            isTieBreak = false;
             matchScoreModel.setTieBreak(false);
         }
     }
@@ -187,13 +186,11 @@ public class MatchScoreCalculationService {
     }
 
     private void handleDraw(MatchScoreModel matchScoreModel) {
-        isDraw = true;
         matchScoreModel.setDraw(true);
         setZeroPoints(matchScoreModel);
     }
 
     private void handleTieBreak(MatchScoreModel matchScoreModel) {
-        isTieBreak = true;
         matchScoreModel.setTieBreak(true);
         setZeroPoints(matchScoreModel);
     }

@@ -7,8 +7,6 @@ import com.solo83.tennisscoreboard.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -27,14 +25,8 @@ class MatchScoreCalculationServiceTest {
     private Player secondPlayer;
 
     @BeforeEach
-    void setUp() throws NoSuchFieldException, IllegalAccessException {
+    void setUp(){
         matchScoreCalculationService = MatchScoreCalculationService.getInstance();
-        Field isTieBreak = MatchScoreCalculationService.class.getDeclaredField("isTieBreak");
-        Field isDraw = MatchScoreCalculationService.class.getDeclaredField("isDraw");
-        isTieBreak.setAccessible(true);
-        isTieBreak.set(matchScoreCalculationService,false);
-        isDraw.setAccessible(true);
-        isDraw.set(matchScoreCalculationService,false);
 
         firstPlayerScore = new PlayerScore();
         secondPlayerScore = new PlayerScore();
