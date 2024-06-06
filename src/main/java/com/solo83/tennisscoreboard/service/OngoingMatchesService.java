@@ -1,23 +1,25 @@
 package com.solo83.tennisscoreboard.service;
+
 import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
 import com.solo83.tennisscoreboard.dto.MatchScoreModel;
 import com.solo83.tennisscoreboard.dto.PlayerScore;
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.entity.Player;
+import com.solo83.tennisscoreboard.repository.OngoingMatchesRepository;
+import com.solo83.tennisscoreboard.repository.OngoingMatchesRepositoryImpl;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 public class OngoingMatchesService {
     private final PlayerService playerService = PlayerServiceImpl.getInstance();
     private final FinishedMatchesPersistenceService persistenceService = FinishedMatchesPersistenceService.getInstance();
+    private final OngoingMatchesRepository ongoingMatchesRepository = OngoingMatchesRepositoryImpl.getInstance();
 
     private static OngoingMatchesService instance;
 
-    private final Map<UUID, MatchScoreModel> matches = new ConcurrentHashMap<>();
 
     private OngoingMatchesService() {
     }
@@ -50,12 +52,12 @@ public class OngoingMatchesService {
         model.setFirstPlayerScore(player1Score);
         model.setSecondPlayerScore(player2Score);
 
-        matches.put(uuid, model);
+        ongoingMatchesRepository.save(uuid, model);
         return uuid;
     }
 
     public MatchScoreModel getMatch(UUID uuid) {
-        return matches.get(uuid);
+        return ongoingMatchesRepository.get(uuid);
     }
 
     public void persistMatch(MatchScoreModel matchScoreModel) throws RepositoryException {
@@ -63,8 +65,9 @@ public class OngoingMatchesService {
         persistenceService.persistMatch(match);
     }
 
-    public void removeMatch(UUID uuid)  {
-        matches.remove(uuid);
+    public void removeMatch(UUID uuid) {
+        ongoingMatchesRepository.remove(uuid);
     }
+
 
 }
