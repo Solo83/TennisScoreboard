@@ -1,9 +1,9 @@
-<%@ page import="com.solo83.tennisscoreboard.dto.MatchScoreModel" %>
+<%@ page import="com.solo83.tennisscoreboard.dto.OngoingMatch" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ include file="/WEB-INF/header.jsp" %>
 
 <%
-    MatchScoreModel currentMatch = (MatchScoreModel) request.getAttribute("currentMatch");
+    OngoingMatch currentMatch = (OngoingMatch) request.getAttribute("currentMatch");
     String player1name = currentMatch.getMatch().getFirstPlayer().getName();
     String player2name = currentMatch.getMatch().getSecondPlayer().getName();
     String winnerName = currentMatch.getMatch().getWinner().getName();

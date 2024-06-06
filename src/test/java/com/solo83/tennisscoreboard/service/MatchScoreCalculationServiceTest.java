@@ -1,6 +1,6 @@
 package com.solo83.tennisscoreboard.service;
 
-import com.solo83.tennisscoreboard.dto.MatchScoreModel;
+import com.solo83.tennisscoreboard.dto.OngoingMatch;
 import com.solo83.tennisscoreboard.dto.PlayerScore;
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.entity.Player;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 class MatchScoreCalculationServiceTest {
 
     private MatchScoreCalculationService matchScoreCalculationService;
-    private MatchScoreModel matchScoreModel;
+    private OngoingMatch ongoingMatch;
     private PlayerScore firstPlayerScore;
     private PlayerScore secondPlayerScore;
     private Match match;
@@ -39,17 +39,17 @@ class MatchScoreCalculationServiceTest {
         when(match.getFirstPlayer()).thenReturn(firstPlayer);
         when(match.getSecondPlayer()).thenReturn(secondPlayer);
 
-        matchScoreModel = new MatchScoreModel();
-        matchScoreModel.setFirstPlayerScore(firstPlayerScore);
-        matchScoreModel.setSecondPlayerScore(secondPlayerScore);
-        matchScoreModel.setMatch(match);
+        ongoingMatch = new OngoingMatch();
+        ongoingMatch.setFirstPlayerScore(firstPlayerScore);
+        ongoingMatch.setSecondPlayerScore(secondPlayerScore);
+        ongoingMatch.setMatch(match);
     }
 
     @Test
     void testCalculateMatchScoreRegularPlay() {
         firstPlayerScore.setPoints(30);
         secondPlayerScore.setPoints(15);
-        matchScoreCalculationService.calculateMatchScore(1, matchScoreModel);
+        matchScoreCalculationService.calculateMatchScore(1, ongoingMatch);
 
         assertEquals(40, firstPlayerScore.getPoints());
         assertEquals(15, secondPlayerScore.getPoints());
@@ -59,9 +59,9 @@ class MatchScoreCalculationServiceTest {
     void testCalculateMatchScoreDraw() {
         firstPlayerScore.setPoints(40);
         secondPlayerScore.setPoints(30);
-        matchScoreCalculationService.calculateMatchScore(2, matchScoreModel);
+        matchScoreCalculationService.calculateMatchScore(2, ongoingMatch);
 
-        assertTrue(matchScoreModel.isDraw());
+        assertTrue(ongoingMatch.isDraw());
         assertEquals(0, firstPlayerScore.getPoints());
         assertEquals(0, secondPlayerScore.getPoints());
     }
@@ -72,7 +72,7 @@ class MatchScoreCalculationServiceTest {
         firstPlayerScore.setPoints(40);
         secondPlayerScore.setPoints(0);
 
-        matchScoreCalculationService.calculateMatchScore(1, matchScoreModel);
+        matchScoreCalculationService.calculateMatchScore(1, ongoingMatch);
 
         assertEquals(1, firstPlayerScore.getGame());
         assertEquals(0, firstPlayerScore.getPoints());
@@ -84,7 +84,7 @@ class MatchScoreCalculationServiceTest {
         firstPlayerScore.setSets(2);
         secondPlayerScore.setSets(1);
 
-        assertTrue(matchScoreCalculationService.checkMatchWinner(firstPlayerScore, secondPlayerScore, matchScoreModel));
+        assertTrue(matchScoreCalculationService.checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch));
         verify(match).setWinner(firstPlayer);
     }
 
@@ -93,7 +93,7 @@ class MatchScoreCalculationServiceTest {
         firstPlayerScore.setSets(1);
         secondPlayerScore.setSets(1);
 
-        assertFalse(matchScoreCalculationService.checkMatchWinner(firstPlayerScore, secondPlayerScore, matchScoreModel));
+        assertFalse(matchScoreCalculationService.checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch));
         verify(match, never()).setWinner(any(Player.class));
     }
 
@@ -102,17 +102,17 @@ class MatchScoreCalculationServiceTest {
         firstPlayerScore.setPoints(30);
         secondPlayerScore.setPoints(40);
 
-        matchScoreCalculationService.handleRegularPlay(1, 1, firstPlayerScore, secondPlayerScore, matchScoreModel);
-        assertTrue(matchScoreModel.isDraw());
+        matchScoreCalculationService.handleRegularPlay(1, 1, firstPlayerScore, secondPlayerScore, ongoingMatch);
+        assertTrue(ongoingMatch.isDraw());
     }
 
     @Test
     void testHandleTieBreakPlay() {
-        matchScoreModel.setTieBreak(true);
+        ongoingMatch.setTieBreak(true);
         firstPlayerScore.setPoints(5);
         secondPlayerScore.setPoints(4);
 
-        matchScoreCalculationService.handleTieBreakPlay(1, 1, firstPlayerScore, secondPlayerScore, matchScoreModel);
+        matchScoreCalculationService.handleTieBreakPlay(1, 1, firstPlayerScore, secondPlayerScore, ongoingMatch);
         assertEquals(6, firstPlayerScore.getPoints());
     }
 
@@ -121,7 +121,7 @@ class MatchScoreCalculationServiceTest {
         firstPlayerScore.setGame(6);
         secondPlayerScore.setGame(4);
 
-        matchScoreCalculationService.checkSetWinner(firstPlayerScore, secondPlayerScore, matchScoreModel);
+        matchScoreCalculationService.checkSetWinner(firstPlayerScore, secondPlayerScore, ongoingMatch);
         assertEquals(1, firstPlayerScore.getSets());
         assertEquals(0, firstPlayerScore.getGame());
         assertEquals(0, secondPlayerScore.getGame());
@@ -132,8 +132,8 @@ class MatchScoreCalculationServiceTest {
         firstPlayerScore.setGame(6);
         secondPlayerScore.setGame(6);
 
-        matchScoreCalculationService.checkSetWinner(firstPlayerScore, secondPlayerScore, matchScoreModel);
-        assertTrue(matchScoreModel.isTieBreak());
+        matchScoreCalculationService.checkSetWinner(firstPlayerScore, secondPlayerScore, ongoingMatch);
+        assertTrue(ongoingMatch.isTieBreak());
     }
 
 }

@@ -1,6 +1,6 @@
 package com.solo83.tennisscoreboard.service;
 
-import com.solo83.tennisscoreboard.dto.MatchScoreModel;
+import com.solo83.tennisscoreboard.dto.OngoingMatch;
 import com.solo83.tennisscoreboard.dto.PlayerScore;
 import com.solo83.tennisscoreboard.entity.Match;
 import lombok.extern.slf4j.Slf4j;
@@ -28,35 +28,35 @@ public class MatchScoreCalculationService {
     }
 
 
-    public boolean calculateMatchScore(Integer playerId, MatchScoreModel matchScoreModel) {
-        Match match = matchScoreModel.getMatch();
+    public boolean calculateMatchScore(Integer playerId, OngoingMatch ongoingMatch) {
+        Match match = ongoingMatch.getMatch();
         Integer firstPlayerID = match.getFirstPlayer().getId();
-        PlayerScore firstPlayerScore = matchScoreModel.getFirstPlayerScore();
-        PlayerScore secondPlayerScore = matchScoreModel.getSecondPlayerScore();
-        boolean isTieBreak = matchScoreModel.isTieBreak();
-        boolean isDraw = matchScoreModel.isDraw();
+        PlayerScore firstPlayerScore = ongoingMatch.getFirstPlayerScore();
+        PlayerScore secondPlayerScore = ongoingMatch.getSecondPlayerScore();
+        boolean isTieBreak = ongoingMatch.isTieBreak();
+        boolean isDraw = ongoingMatch.isDraw();
 
 
-        if (checkMatchWinner(firstPlayerScore, secondPlayerScore, matchScoreModel)) {
+        if (checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch)) {
             log.info("Match finished");
             return true;
         }
 
         if (isTieBreak) {
-            handleTieBreakPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, matchScoreModel);
+            handleTieBreakPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         } else if (isDraw) {
-            handleDrawPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, matchScoreModel);
+            handleDrawPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         } else {
-            handleRegularPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, matchScoreModel);
+            handleRegularPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         }
-        checkSetWinner(firstPlayerScore, secondPlayerScore, matchScoreModel);
+        checkSetWinner(firstPlayerScore, secondPlayerScore, ongoingMatch);
         return false;
     }
 
-    boolean checkMatchWinner(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, MatchScoreModel matchScoreModel) {
+    boolean checkMatchWinner(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
         int player1sets = firstPlayerScore.getSets();
         int player2sets = secondPlayerScore.getSets();
-        Match match = matchScoreModel.getMatch();
+        Match match = ongoingMatch.getMatch();
 
         int TOTAL_SETS = 3;
         if (player1sets == TOTAL_SETS / 2 + 1) {
@@ -71,21 +71,21 @@ public class MatchScoreCalculationService {
         return false;
     }
 
-    void handleRegularPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, MatchScoreModel matchScoreModel) {
+    void handleRegularPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
         updatePoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
         int DRAW_POINT = 40;
         if (firstPlayerScore.getPoints() == DRAW_POINT && secondPlayerScore.getPoints() == DRAW_POINT) {
-            handleDraw(matchScoreModel);
+            handleDraw(ongoingMatch);
         } else if (TENNIS_POINTS.indexOf(firstPlayerScore.getPoints()) == TENNIS_POINTS.size() - 1) {
             firstPlayerScore.setGame(firstPlayerScore.getGame() + 1);
-            setZeroPoints(matchScoreModel);
+            setZeroPoints(ongoingMatch);
         } else if (TENNIS_POINTS.indexOf(secondPlayerScore.getPoints()) == TENNIS_POINTS.size() - 1) {
             secondPlayerScore.setGame(secondPlayerScore.getGame() + 1);
-            setZeroPoints(matchScoreModel);
+            setZeroPoints(ongoingMatch);
         }
     }
 
-    private void handleDrawPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, MatchScoreModel matchScoreModel) {
+    private void handleDrawPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
         incrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
 
         int pointDifference = firstPlayerScore.getPoints() - secondPlayerScore.getPoints();
@@ -95,20 +95,20 @@ public class MatchScoreCalculationService {
             } else {
                 secondPlayerScore.setGame(secondPlayerScore.getGame() + 1);
             }
-            setZeroPoints(matchScoreModel);
-            matchScoreModel.setDraw(false);
+            setZeroPoints(ongoingMatch);
+            ongoingMatch.setDraw(false);
         }
     }
 
-    void checkSetWinner(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, MatchScoreModel matchScoreModel) {
+    void checkSetWinner(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
         int player1games = firstPlayerScore.getGame();
         int player2games = secondPlayerScore.getGame();
         int gamesDifference = player1games - player2games;
-        boolean isTieBreak = matchScoreModel.isTieBreak();
+        boolean isTieBreak = ongoingMatch.isTieBreak();
 
         int TOTAL_GAMES = 6;
         if (!isTieBreak && player1games == TOTAL_GAMES && player2games == TOTAL_GAMES) {
-            handleTieBreak(matchScoreModel);
+            handleTieBreak(ongoingMatch);
         } else if (Math.abs(gamesDifference) >= POINTS_DIFFERENCE && (player1games >= TOTAL_GAMES || player2games >= TOTAL_GAMES)) {
             if (gamesDifference > 0) {
                 firstPlayerScore.setSets(firstPlayerScore.getSets() + 1);
@@ -121,11 +121,11 @@ public class MatchScoreCalculationService {
                 firstPlayerScore.save(player1games);
                 log.info("Second player won SET, score saved");
             }
-            setZeroGames(matchScoreModel);
+            setZeroGames(ongoingMatch);
         }
     }
 
-    void handleTieBreakPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, MatchScoreModel matchScoreModel) {
+    void handleTieBreakPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
         incrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
 
         int player1points = firstPlayerScore.getPoints();
@@ -143,9 +143,9 @@ public class MatchScoreCalculationService {
                 secondPlayerScore.save(TIE_BREAK_POINTS);
                 firstPlayerScore.save(firstPlayerScore.getGame());
             }
-            setZeroGames(matchScoreModel);
-            setZeroPoints(matchScoreModel);
-            matchScoreModel.setTieBreak(false);
+            setZeroGames(ongoingMatch);
+            setZeroPoints(ongoingMatch);
+            ongoingMatch.setTieBreak(false);
         }
     }
 
@@ -175,24 +175,24 @@ public class MatchScoreCalculationService {
         return (indexOfIncreased < TENNIS_POINTS.size()) ? TENNIS_POINTS.get(indexOfIncreased) : 0;
     }
 
-    private void setZeroPoints(MatchScoreModel matchScoreModel) {
-        matchScoreModel.getFirstPlayerScore().setPoints(0);
-        matchScoreModel.getSecondPlayerScore().setPoints(0);
+    private void setZeroPoints(OngoingMatch ongoingMatch) {
+        ongoingMatch.getFirstPlayerScore().setPoints(0);
+        ongoingMatch.getSecondPlayerScore().setPoints(0);
     }
 
-    private void setZeroGames(MatchScoreModel matchScoreModel) {
-        matchScoreModel.getFirstPlayerScore().setGame(0);
-        matchScoreModel.getSecondPlayerScore().setGame(0);
+    private void setZeroGames(OngoingMatch ongoingMatch) {
+        ongoingMatch.getFirstPlayerScore().setGame(0);
+        ongoingMatch.getSecondPlayerScore().setGame(0);
     }
 
-    private void handleDraw(MatchScoreModel matchScoreModel) {
-        matchScoreModel.setDraw(true);
-        setZeroPoints(matchScoreModel);
+    private void handleDraw(OngoingMatch ongoingMatch) {
+        ongoingMatch.setDraw(true);
+        setZeroPoints(ongoingMatch);
     }
 
-    private void handleTieBreak(MatchScoreModel matchScoreModel) {
-        matchScoreModel.setTieBreak(true);
-        setZeroPoints(matchScoreModel);
+    private void handleTieBreak(OngoingMatch ongoingMatch) {
+        ongoingMatch.setTieBreak(true);
+        setZeroPoints(ongoingMatch);
     }
 
 

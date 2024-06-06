@@ -1,6 +1,6 @@
 package com.solo83.tennisscoreboard.repository;
 
-import com.solo83.tennisscoreboard.dto.MatchScoreModel;
+import com.solo83.tennisscoreboard.dto.OngoingMatch;
 
 import java.util.Map;
 import java.util.UUID;
@@ -20,13 +20,13 @@ public class OngoingMatchesRepositoryImpl implements OngoingMatchesRepository {
         return instance;
     }
 
-    private final Map<UUID, MatchScoreModel> matches = new ConcurrentHashMap<>();
+    private final Map<UUID, OngoingMatch> matches = new ConcurrentHashMap<>();
 
-    public void save(UUID uuid, MatchScoreModel matchScoreModel) {
-        matches.put(uuid, matchScoreModel);
+    public void save(UUID uuid, OngoingMatch ongoingMatch) {
+        matches.put(uuid, ongoingMatch);
     }
 
-    public MatchScoreModel get(UUID uuid) {
+    public OngoingMatch get(UUID uuid) {
         return matches.get(uuid);
     }
 

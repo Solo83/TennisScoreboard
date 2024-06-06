@@ -4,7 +4,7 @@ import com.solo83.tennisscoreboard.entity.Match;
 import lombok.Data;
 
 @Data
-public class MatchScoreModel {
+public class OngoingMatch {
     private Match match;
     private PlayerScore firstPlayerScore;
     private PlayerScore secondPlayerScore;

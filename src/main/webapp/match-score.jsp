@@ -1,4 +1,4 @@
-<%@ page import="com.solo83.tennisscoreboard.dto.MatchScoreModel" %>
+<%@ page import="com.solo83.tennisscoreboard.dto.OngoingMatch" %>
 <%@ page import="com.solo83.tennisscoreboard.service.OngoingMatchesService" %>
 <%@ page import="java.util.UUID" %>
 <%@ include file="/WEB-INF/header.jsp" %>
@@ -18,7 +18,7 @@
     boolean isDraft;
     boolean isTieBreak;
     String points = "POINTS";
-    MatchScoreModel currentMatch = OngoingMatchesService.getInstance().getMatch(UUID.fromString(request.getParameter("uuid")));
+    OngoingMatch currentMatch = OngoingMatchesService.getInstance().getMatch(UUID.fromString(request.getParameter("uuid")));
     isDraft = currentMatch.isDraw();
     isTieBreak = currentMatch.isTieBreak();
     player1name = currentMatch.getMatch().getFirstPlayer().getName();

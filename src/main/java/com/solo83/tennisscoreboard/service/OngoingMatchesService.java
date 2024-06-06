@@ -1,7 +1,7 @@
 package com.solo83.tennisscoreboard.service;
 
 import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
-import com.solo83.tennisscoreboard.dto.MatchScoreModel;
+import com.solo83.tennisscoreboard.dto.OngoingMatch;
 import com.solo83.tennisscoreboard.dto.PlayerScore;
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.entity.Player;
@@ -40,7 +40,7 @@ public class OngoingMatchesService {
         Optional<Player> secondPlayer = playerService.createOrGet(player2);
 
         UUID uuid = UUID.randomUUID();
-        MatchScoreModel model = new MatchScoreModel();
+        OngoingMatch model = new OngoingMatch();
         Match match = new Match();
         match.setFirstPlayer(firstPlayer.orElse(null));
         match.setSecondPlayer(secondPlayer.orElse(null));
@@ -56,12 +56,12 @@ public class OngoingMatchesService {
         return uuid;
     }
 
-    public MatchScoreModel getMatch(UUID uuid) {
+    public OngoingMatch getMatch(UUID uuid) {
         return ongoingMatchesRepository.get(uuid);
     }
 
-    public void persistMatch(MatchScoreModel matchScoreModel) throws RepositoryException {
-        Match match = matchScoreModel.getMatch();
+    public void persistMatch(OngoingMatch ongoingMatch) throws RepositoryException {
+        Match match = ongoingMatch.getMatch();
         persistenceService.persistMatch(match);
     }
 
