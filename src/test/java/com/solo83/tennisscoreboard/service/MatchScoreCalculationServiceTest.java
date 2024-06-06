@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class MatchScoreCalculationServiceTest {
 
@@ -26,11 +24,11 @@ class MatchScoreCalculationServiceTest {
 
         firstPlayerScore = new PlayerScore();
         secondPlayerScore = new PlayerScore();
-        firstPlayer = mock(Player.class);
-        secondPlayer = mock(Player.class);
+        firstPlayer = new Player("First Player");
+        secondPlayer = new Player("Second Player");
 
-        when(firstPlayer.getId()).thenReturn(1);
-        when(secondPlayer.getId()).thenReturn(2);
+        firstPlayer.setId(1);
+        secondPlayer.setId(2);
 
         ongoingMatch = new OngoingMatch();
         ongoingMatch.setFirstPlayerScore(firstPlayerScore);
@@ -54,14 +52,13 @@ class MatchScoreCalculationServiceTest {
     @Test
     void testCalculateMatchScoreDraw() {
         firstPlayerScore.setPoints(40);
-        secondPlayerScore.setPoints(30);
+        secondPlayerScore.setPoints(40);
         matchScoreCalculationService.calculateMatchScore(2, ongoingMatch);
 
         assertTrue(ongoingMatch.isDraw());
         assertEquals(0, firstPlayerScore.getPoints());
         assertEquals(0, secondPlayerScore.getPoints());
     }
-
 
     @Test
     void testCalculateMatchScoreWinGame() {
@@ -95,7 +92,7 @@ class MatchScoreCalculationServiceTest {
 
     @Test
     void testHandleRegularPlayDraw() {
-        firstPlayerScore.setPoints(30);
+        firstPlayerScore.setPoints(40);
         secondPlayerScore.setPoints(40);
 
         matchScoreCalculationService.handleRegularPlay(1, 1, firstPlayerScore, secondPlayerScore, ongoingMatch);
