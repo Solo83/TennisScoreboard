@@ -2,7 +2,6 @@ package com.solo83.tennisscoreboard.service;
 
 import com.solo83.tennisscoreboard.dto.OngoingMatch;
 import com.solo83.tennisscoreboard.dto.PlayerScore;
-import com.solo83.tennisscoreboard.entity.Match;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -29,8 +28,8 @@ public class MatchScoreCalculationService {
 
 
     public boolean calculateMatchScore(Integer playerId, OngoingMatch ongoingMatch) {
-        Match match = ongoingMatch.getMatch();
-        Integer firstPlayerID = match.getFirstPlayer().getId();
+
+        Integer firstPlayerID = ongoingMatch.getFirstPlayer().getId();
         PlayerScore firstPlayerScore = ongoingMatch.getFirstPlayerScore();
         PlayerScore secondPlayerScore = ongoingMatch.getSecondPlayerScore();
         boolean isTieBreak = ongoingMatch.isTieBreak();
@@ -56,16 +55,16 @@ public class MatchScoreCalculationService {
     boolean checkMatchWinner(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
         int player1sets = firstPlayerScore.getSets();
         int player2sets = secondPlayerScore.getSets();
-        Match match = ongoingMatch.getMatch();
+
 
         int TOTAL_SETS = 3;
         if (player1sets == TOTAL_SETS / 2 + 1) {
-            match.setWinner(match.getFirstPlayer());
-            log.info("Winner is first player - {}", match.getFirstPlayer());
+            ongoingMatch.setWinner(ongoingMatch.getFirstPlayer());
+            log.info("Winner is first player - {}", ongoingMatch.getFirstPlayer());
             return true;
         } else if (player2sets == TOTAL_SETS / 2 + 1) {
-            match.setWinner(match.getSecondPlayer());
-            log.info("Winner is second player - {}", match.getSecondPlayer());
+            ongoingMatch.setWinner(ongoingMatch.getSecondPlayer());
+            log.info("Winner is second player - {}", ongoingMatch.getSecondPlayer());
             return true;
         }
         return false;

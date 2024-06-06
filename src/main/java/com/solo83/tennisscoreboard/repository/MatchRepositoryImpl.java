@@ -33,7 +33,7 @@ public class MatchRepositoryImpl implements MatchRepository {
         Transaction transaction;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Query<Match> query = session.createQuery("from Matches where id = :id", Match.class);
+            Query<Match> query = session.createQuery("from Match where id = :id", Match.class);
             query.setParameter("id", id);
             matches = Optional.of(query.getSingleResult());
             log.info("Extracted match: {}", matches.get());
@@ -51,7 +51,7 @@ public class MatchRepositoryImpl implements MatchRepository {
         List<Match> matches;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Query<Match> query = session.createQuery("from Matches", Match.class);
+            Query<Match> query = session.createQuery("from Match", Match.class);
             matches = query.getResultList();
             log.info("Extracted matches: {}", matches);
             transaction.commit();

@@ -21,16 +21,16 @@
     OngoingMatch currentMatch = OngoingMatchesService.getInstance().getMatch(UUID.fromString(request.getParameter("uuid")));
     isDraft = currentMatch.isDraw();
     isTieBreak = currentMatch.isTieBreak();
-    player1name = currentMatch.getMatch().getFirstPlayer().getName();
-    player2name = currentMatch.getMatch().getSecondPlayer().getName();
+    player1name = currentMatch.getFirstPlayer().getName();
+    player2name = currentMatch.getSecondPlayer().getName();
     player1set = currentMatch.getFirstPlayerScore().getSets();
     player2set = currentMatch.getSecondPlayerScore().getSets();
     player1game = currentMatch.getFirstPlayerScore().getGame();
     player2game = currentMatch.getSecondPlayerScore().getGame();
     player1points = currentMatch.getFirstPlayerScore().getPoints();
     player2points = currentMatch.getSecondPlayerScore().getPoints();
-    player1Id = currentMatch.getMatch().getFirstPlayer().getId();
-    player2Id = currentMatch.getMatch().getSecondPlayer().getId();
+    player1Id = currentMatch.getFirstPlayer().getId();
+    player2Id = currentMatch.getSecondPlayer().getId();
     if (isDraft) {points = "DRAFT Started";};
     if (isTieBreak) {points = "TieBreak Started";}
 %>

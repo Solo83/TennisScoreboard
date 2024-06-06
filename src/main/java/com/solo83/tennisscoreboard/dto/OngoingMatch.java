@@ -1,11 +1,14 @@
 package com.solo83.tennisscoreboard.dto;
 
-import com.solo83.tennisscoreboard.entity.Match;
+import com.solo83.tennisscoreboard.entity.Player;
 import lombok.Data;
 
 @Data
 public class OngoingMatch {
-    private Match match;
+
+    private Player firstPlayer;
+    private Player secondPlayer;
+    private Player winner;
     private PlayerScore firstPlayerScore;
     private PlayerScore secondPlayerScore;
     private boolean isDraw;

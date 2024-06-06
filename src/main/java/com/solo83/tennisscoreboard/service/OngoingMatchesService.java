@@ -9,11 +9,11 @@ import com.solo83.tennisscoreboard.repository.OngoingMatchesRepository;
 import com.solo83.tennisscoreboard.repository.OngoingMatchesRepositoryImpl;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 
-import java.util.Optional;
 import java.util.UUID;
 
 
 public class OngoingMatchesService {
+    private final Mapper mapper = Mapper.getInstance();
     private final PlayerService playerService = PlayerServiceImpl.getInstance();
     private final FinishedMatchesPersistenceService persistenceService = FinishedMatchesPersistenceService.getInstance();
     private final OngoingMatchesRepository ongoingMatchesRepository = OngoingMatchesRepositoryImpl.getInstance();
@@ -36,15 +36,13 @@ public class OngoingMatchesService {
         GetPlayerRequest player1 = new GetPlayerRequest(firstPlayerName);
         GetPlayerRequest player2 = new GetPlayerRequest(secondPlayerName);
 
-        Optional<Player> firstPlayer = playerService.createOrGet(player1);
-        Optional<Player> secondPlayer = playerService.createOrGet(player2);
+       Player firstPlayer = playerService.createOrGet(player1);
+       Player secondPlayer = playerService.createOrGet(player2);
 
         UUID uuid = UUID.randomUUID();
         OngoingMatch model = new OngoingMatch();
-        Match match = new Match();
-        match.setFirstPlayer(firstPlayer.orElse(null));
-        match.setSecondPlayer(secondPlayer.orElse(null));
-        model.setMatch(match);
+        model.setFirstPlayer(firstPlayer);
+        model.setSecondPlayer(secondPlayer);
 
         PlayerScore player1Score = new PlayerScore();
         PlayerScore player2Score = new PlayerScore();
@@ -61,7 +59,7 @@ public class OngoingMatchesService {
     }
 
     public void persistMatch(OngoingMatch ongoingMatch) throws RepositoryException {
-        Match match = ongoingMatch.getMatch();
+        Match match = mapper.toMatch(ongoingMatch);
         persistenceService.persistMatch(match);
     }
 

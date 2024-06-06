@@ -2,16 +2,12 @@ package com.solo83.tennisscoreboard.service;
 
 import com.solo83.tennisscoreboard.dto.OngoingMatch;
 import com.solo83.tennisscoreboard.dto.PlayerScore;
-import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class MatchScoreCalculationServiceTest {
@@ -20,9 +16,9 @@ class MatchScoreCalculationServiceTest {
     private OngoingMatch ongoingMatch;
     private PlayerScore firstPlayerScore;
     private PlayerScore secondPlayerScore;
-    private Match match;
     private Player firstPlayer;
     private Player secondPlayer;
+
 
     @BeforeEach
     void setUp(){
@@ -32,17 +28,17 @@ class MatchScoreCalculationServiceTest {
         secondPlayerScore = new PlayerScore();
         firstPlayer = mock(Player.class);
         secondPlayer = mock(Player.class);
-        match = mock(Match.class);
 
         when(firstPlayer.getId()).thenReturn(1);
         when(secondPlayer.getId()).thenReturn(2);
-        when(match.getFirstPlayer()).thenReturn(firstPlayer);
-        when(match.getSecondPlayer()).thenReturn(secondPlayer);
 
         ongoingMatch = new OngoingMatch();
         ongoingMatch.setFirstPlayerScore(firstPlayerScore);
         ongoingMatch.setSecondPlayerScore(secondPlayerScore);
-        ongoingMatch.setMatch(match);
+        ongoingMatch.setFirstPlayer(firstPlayer);
+        ongoingMatch.setSecondPlayer(secondPlayer);
+
+
     }
 
     @Test
@@ -85,7 +81,7 @@ class MatchScoreCalculationServiceTest {
         secondPlayerScore.setSets(1);
 
         assertTrue(matchScoreCalculationService.checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch));
-        verify(match).setWinner(firstPlayer);
+        assertEquals(ongoingMatch.getWinner(), firstPlayer);
     }
 
     @Test
@@ -94,7 +90,7 @@ class MatchScoreCalculationServiceTest {
         secondPlayerScore.setSets(1);
 
         assertFalse(matchScoreCalculationService.checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch));
-        verify(match, never()).setWinner(any(Player.class));
+        assertNull(ongoingMatch.getWinner());
     }
 
     @Test

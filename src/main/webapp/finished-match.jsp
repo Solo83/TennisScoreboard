@@ -4,9 +4,9 @@
 
 <%
     OngoingMatch currentMatch = (OngoingMatch) request.getAttribute("currentMatch");
-    String player1name = currentMatch.getMatch().getFirstPlayer().getName();
-    String player2name = currentMatch.getMatch().getSecondPlayer().getName();
-    String winnerName = currentMatch.getMatch().getWinner().getName();
+    String player1name = currentMatch.getFirstPlayer().getName();
+    String player2name = currentMatch.getSecondPlayer().getName();
+    String winnerName = currentMatch.getWinner().getName();
 
     ArrayList<Integer> p1scores = currentMatch.getFirstPlayerScore().getGameScores();
     ArrayList<Integer> p2scores = currentMatch.getSecondPlayerScore().getGameScores();

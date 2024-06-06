@@ -13,7 +13,7 @@ import java.util.Optional;
 public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository = PlayerRepositoryImpl.getInstance();
     private static PlayerServiceImpl instance;
-    private final Mapper mapper = new Mapper();
+    private final Mapper mapper = Mapper.getInstance();
 
     private PlayerServiceImpl() {
     }
@@ -27,7 +27,7 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public Optional<Player> createOrGet(GetPlayerRequest getPlayerRequest) throws RepositoryException {
+    public Player createOrGet(GetPlayerRequest getPlayerRequest) throws RepositoryException {
         Player player = mapper.toPlayer(getPlayerRequest);
         Optional<Player> currentPlayer;
         try {
@@ -36,6 +36,7 @@ public class PlayerServiceImpl implements PlayerService {
             currentPlayer = playerRepository.save(player);
         }
         log.info("Existing player: {}", currentPlayer.orElse(null));
-        return currentPlayer;
+
+        return currentPlayer.orElse(null);
     }
 }
