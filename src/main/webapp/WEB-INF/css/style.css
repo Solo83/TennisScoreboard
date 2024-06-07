@@ -17,9 +17,22 @@ body {
 }
 
 #body{
-    margin: 0;
     background-color: #000000;
     height: 100%;
+}
+
+#table{
+    color: white;
+    align-self: center;
+    text-align: center;
+}
+
+#finish_table{
+
+    color: white;
+    align-self: center;
+    text-align: center;
+    border-spacing: 10px;
 }
 
 #error{
@@ -31,7 +44,7 @@ body {
 #content{
 
     a { color: #2353b3;
-        font-size: large;
+        font-size: medium;
         font-weight: bold;
         text-decoration: none;
     }
@@ -57,14 +70,15 @@ body {
     text-align: center;
     font-size: x-large;
     font-weight: bold;
+
     position: absolute;
-    top: 50%;
     left: 50%;
+    top: 50%;
     transform: translate(-50%, -50%);
+
     padding: 10px;
     border-radius: 20px;
     background-color: #323232;
-    min-height: 150px;
-    min-width: 500px;
+
 
 }

@@ -3,7 +3,6 @@ package com.solo83.tennisscoreboard.repository;
 import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Session;
@@ -41,7 +40,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             transaction.commit();
         } catch (Exception e) {
             log.error("Error while getting player:", e);
-            throw new RepositoryException(e.getMessage());
+            throw new RepositoryException("Error while getting player by Name");
         }
         return player;
     }
@@ -58,14 +57,13 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             transaction.commit();
         } catch (Exception e) {
             log.error("Error while getting players:", e);
-            throw new RepositoryException(e.getMessage());
+            throw new RepositoryException("Error while getting players");
 
         }
         return players;
     }
 
     @Override
-    @Transactional
     public Optional<Player>save(Player player) throws RepositoryException {
         Optional<Player> addedPlayer;
         Transaction transaction = null;
@@ -82,7 +80,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                     transaction.rollback();
                     log.info("Transaction is {}", transaction.getStatus());
                 }
-                throw new RepositoryException(e.getMessage());
+                throw new RepositoryException("Error while adding player");
             }
             return addedPlayer;
         }
