@@ -17,7 +17,7 @@ class PlayerNameValidatorTest {
     PlayerNameValidator validator = new PlayerNameValidator();
 
     @Test
-    void PlayerName_WithTwoWords_ShouldPassValidation () throws ValidatorException {
+    void PlayerNameWithTwoWordsShouldPassValidation () throws ValidatorException {
         when(request.getParameterMap()).thenReturn(new HashMap<>() {
             {
                 put("player1", new String[]{"TwoWords Name"});
@@ -29,7 +29,7 @@ class PlayerNameValidatorTest {
     }
 
     @Test
-    void PlayerName_WithOneWord_ShouldThrowException() {
+    void PlayerNameWithOneWordShouldThrowException() {
         when(request.getParameterMap()).thenReturn(new HashMap<>() {
             {
                 put("player2", new String[]{"NameWithOneWord"});
