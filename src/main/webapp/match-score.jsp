@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.solo83.tennisscoreboard.dto.OngoingMatch" %>
 <%@ page import="com.solo83.tennisscoreboard.service.OngoingMatchesService" %>
 <%@ page import="java.util.UUID" %>
@@ -108,6 +109,11 @@
             </tr>
             </tbody>
         </table>
+        <c:if test="${not empty error}">
+            <div id="error">
+                    ${error}
+            </div>
+        </c:if>
 </div>
 </body>
 </html>

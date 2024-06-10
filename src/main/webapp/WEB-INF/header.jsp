@@ -5,7 +5,7 @@
 <div id="header">
     <a href="index.jsp">HOME</a>
     <a href="new-match.jsp">NEW</a>
-    <a href="">MATCHES</a>
+    <a href="matches">MATCHES</a>
 </div>
 
 </body>

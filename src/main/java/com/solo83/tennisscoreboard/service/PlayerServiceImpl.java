@@ -25,7 +25,6 @@ public class PlayerServiceImpl implements PlayerService {
         return instance;
     }
 
-
     @Override
     public Player createOrGet(GetPlayerRequest getPlayerRequest) throws RepositoryException {
         Player player = mapper.toPlayer(getPlayerRequest);

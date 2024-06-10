@@ -19,12 +19,6 @@ public class Mapper {
         return instance;
     }
 
-
-    public GetPlayerRequest toDto(Player player) {
-        String name = player.getName();
-        return new GetPlayerRequest(name);
-    }
-
     public Player toPlayer(GetPlayerRequest getPlayerRequest) {
         return new Player(getPlayerRequest.name());
     }

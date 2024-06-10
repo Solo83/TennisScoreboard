@@ -1,5 +1,4 @@
 package com.solo83.tennisscoreboard.repository;
-
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
@@ -7,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -26,25 +24,6 @@ public class MatchRepositoryImpl implements MatchRepository {
         return instance;
     }
 
-
-    @Override
-    public Optional<Match> getMatchById(Integer id) throws RepositoryException {
-        Optional<Match> matches;
-        Transaction transaction;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            Query<Match> query = session.createQuery("from Match where id = :id", Match.class);
-            query.setParameter("id", id);
-            matches = Optional.of(query.getSingleResult());
-            log.info("Extracted match: {}", matches.get());
-            transaction.commit();
-        } catch (Exception e) {
-            log.error("Error while getting match:", e);
-            throw new RepositoryException("Error while getting match by Id");
-        }
-        return matches;
-    }
-
     @Override
     public List<Match> getAllMatches() throws RepositoryException {
         Transaction transaction;
@@ -59,6 +38,26 @@ public class MatchRepositoryImpl implements MatchRepository {
             log.error("Error while getting matches:", e);
             throw new RepositoryException("Error while getting matches");
 
+        }
+        return matches;
+    }
+
+
+    @Override
+    public List<Match> getMatchesByPlayerName(String playerName) throws RepositoryException {
+        playerName = playerName.toLowerCase().trim();
+        Transaction transaction;
+        List<Match> matches;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            Query<Match> query = session.createQuery("from Match m where lower(m.firstPlayer.name) = :playerName or lower(m.secondPlayer.name) = :playerName", Match.class);
+            query.setParameter("playerName", playerName);
+            matches = query.getResultList();
+            log.info("Extracted matches: {}", matches);
+            transaction.commit();
+        } catch (Exception e) {
+            log.error("Error while getting matches:", e);
+            throw new RepositoryException("Error while getting matches");
         }
         return matches;
     }
