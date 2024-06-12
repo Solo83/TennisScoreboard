@@ -29,7 +29,7 @@ public class Matches extends HttpServlet {
 
             Pageable pageable = createPageable(pageNumber);
             MatchSearchRequest matchSearchRequest = new MatchSearchRequest(playerName);
-            Page<Match> matchesPage = finishedMatchesPersistenceService.searchMatches(pageable, matchSearchRequest);
+            Page<Match> matchesPage = finishedMatchesPersistenceService.getFinishedMatchesPage(pageable, matchSearchRequest);
 
             req.setAttribute("playerName", playerName);
             req.setAttribute("matchesList", matchesPage.getMatches());

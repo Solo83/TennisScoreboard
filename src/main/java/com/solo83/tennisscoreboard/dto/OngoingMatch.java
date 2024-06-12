@@ -11,6 +11,6 @@ public class OngoingMatch {
     private Player winner;
     private PlayerScore firstPlayerScore;
     private PlayerScore secondPlayerScore;
-    private boolean isDraw;
+    private boolean isAdvantage;
     private boolean isTieBreak;
 }

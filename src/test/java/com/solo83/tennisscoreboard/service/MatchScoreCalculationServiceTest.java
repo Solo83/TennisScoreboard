@@ -52,10 +52,10 @@ class MatchScoreCalculationServiceTest {
     @Test
     void testCalculateMatchScoreDraw() {
         firstPlayerScore.setPoints(40);
-        secondPlayerScore.setPoints(40);
+        secondPlayerScore.setPoints(30);
         matchScoreCalculationService.calculateMatchScore(2, ongoingMatch);
 
-        assertTrue(ongoingMatch.isDraw());
+        assertTrue(ongoingMatch.isAdvantage());
         assertEquals(0, firstPlayerScore.getPoints());
         assertEquals(0, secondPlayerScore.getPoints());
     }
@@ -92,11 +92,11 @@ class MatchScoreCalculationServiceTest {
 
     @Test
     void testHandleRegularPlayDraw() {
-        firstPlayerScore.setPoints(40);
+        firstPlayerScore.setPoints(30);
         secondPlayerScore.setPoints(40);
 
         matchScoreCalculationService.handleRegularPlay(1, 1, firstPlayerScore, secondPlayerScore, ongoingMatch);
-        assertTrue(ongoingMatch.isDraw());
+        assertTrue(ongoingMatch.isAdvantage());
     }
 
     @Test

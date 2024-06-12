@@ -16,11 +16,11 @@
     Integer player2game;
     Integer player1Id;
     Integer player2Id;
-    boolean isDraft;
+    boolean isAdvantage;
     boolean isTieBreak;
     String points = "POINTS";
     OngoingMatch currentMatch = OngoingMatchesService.getInstance().getMatch(UUID.fromString(request.getParameter("uuid")));
-    isDraft = currentMatch.isDraw();
+    isAdvantage = currentMatch.isAdvantage();
     isTieBreak = currentMatch.isTieBreak();
     player1name = currentMatch.getFirstPlayer().getName();
     player2name = currentMatch.getSecondPlayer().getName();
@@ -32,7 +32,7 @@
     player2points = currentMatch.getSecondPlayerScore().getPoints();
     player1Id = currentMatch.getFirstPlayer().getId();
     player2Id = currentMatch.getSecondPlayer().getId();
-    if (isDraft) {points = "DRAFT Started";};
+    if (isAdvantage) {points = "Advantage Started";};
     if (isTieBreak) {points = "TieBreak Started";}
 %>
 

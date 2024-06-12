@@ -28,7 +28,7 @@ public class FinishedMatchesPersistenceService {
         matchRepository.save(match);
     }
 
-    public Page<Match> searchMatches(Pageable pageable, MatchSearchRequest matchSearchRequest) throws RepositoryException {
+    public Page<Match> getFinishedMatchesPage(Pageable pageable, MatchSearchRequest matchSearchRequest) throws RepositoryException {
         List<Match> allMatches;
 
         if (matchSearchRequest.name() == null || matchSearchRequest.name().isEmpty()) {

@@ -31,7 +31,7 @@ public class MatchScoreCalculationService {
         PlayerScore firstPlayerScore = ongoingMatch.getFirstPlayerScore();
         PlayerScore secondPlayerScore = ongoingMatch.getSecondPlayerScore();
         boolean isTieBreak = ongoingMatch.isTieBreak();
-        boolean isDraw = ongoingMatch.isDraw();
+        boolean isDraw = ongoingMatch.isAdvantage();
 
         if (checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch)) {
             log.info("Match finished");
@@ -41,7 +41,7 @@ public class MatchScoreCalculationService {
         if (isTieBreak) {
             handleTieBreakPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         } else if (isDraw) {
-            handleDrawPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
+            handleAdvantagePlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         } else {
             handleRegularPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         }
@@ -68,10 +68,8 @@ public class MatchScoreCalculationService {
 
     void handleRegularPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
 
-        boolean isDrawScore = checkDrawScore(firstPlayerScore, secondPlayerScore, ongoingMatch);
-        if (!isDrawScore) {
-            setNextPoint(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
-        }
+        setNextPoint(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
+        checkAdvantageScore(firstPlayerScore, secondPlayerScore, ongoingMatch);
 
         if (!TENNIS_POINTS.contains(firstPlayerScore.getPoints())) {
             firstPlayerScore.incrementGame();
@@ -82,17 +80,16 @@ public class MatchScoreCalculationService {
         }
     }
 
-    boolean checkDrawScore(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
-        int DRAW_POINT = 40;
-        if (firstPlayerScore.getPoints() == DRAW_POINT && secondPlayerScore.getPoints() == DRAW_POINT) {
-            handleDraw(ongoingMatch);
-            return true;
+    void checkAdvantageScore(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
+        int ADVANTAGE_POINT = 40;
+        if (firstPlayerScore.getPoints() == ADVANTAGE_POINT && secondPlayerScore.getPoints() == ADVANTAGE_POINT) {
+            handleAdvantage(ongoingMatch);
         }
-        return false;
     }
 
-    private void handleDrawPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
+    private void handleAdvantagePlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
 
+        incrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
         int pointDifference = firstPlayerScore.getPoints() - secondPlayerScore.getPoints();
 
         if (Math.abs(pointDifference) == POINTS_DIFFERENCE) {
@@ -101,12 +98,9 @@ public class MatchScoreCalculationService {
             } else {
                 secondPlayerScore.incrementGame();
             }
-            ongoingMatch.setDraw(false);
+            ongoingMatch.setAdvantage(false);
             resetPoints(ongoingMatch);
         }
-
-        if (ongoingMatch.isDraw()) {
-        incrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);}
     }
 
     void checkSetWinner(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
@@ -134,6 +128,8 @@ public class MatchScoreCalculationService {
 
     void handleTieBreakPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
 
+        incrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
+
         int player1points = firstPlayerScore.getPoints();
         int player2points = secondPlayerScore.getPoints();
         int pointDifference = player1points - player2points;
@@ -153,10 +149,6 @@ public class MatchScoreCalculationService {
             resetPoints(ongoingMatch);
             ongoingMatch.setTieBreak(false);
         }
-
-        if (ongoingMatch.isTieBreak()) {
-            incrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);}
-
     }
 
     private void setNextPoint(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore) {
@@ -185,8 +177,8 @@ public class MatchScoreCalculationService {
         ongoingMatch.getSecondPlayerScore().resetGames();
     }
 
-    private void handleDraw(OngoingMatch ongoingMatch) {
-        ongoingMatch.setDraw(true);
+    private void handleAdvantage(OngoingMatch ongoingMatch) {
+        ongoingMatch.setAdvantage(true);
         resetPoints(ongoingMatch);
     }
 
