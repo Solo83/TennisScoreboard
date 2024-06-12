@@ -2,17 +2,22 @@ package com.solo83.tennisscoreboard.repository;
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@Data
 public class MatchRepositoryImpl implements MatchRepository {
 
     private static MatchRepositoryImpl instance;
+
+    private final int RESULTS_PER_PAGE = 3;
 
     private MatchRepositoryImpl() {
     }
@@ -32,7 +37,7 @@ public class MatchRepositoryImpl implements MatchRepository {
             transaction = session.beginTransaction();
             Query<Match> query = session.createQuery("from Match", Match.class);
             matches = query.getResultList();
-            log.info("Extracted matches: {}", matches);
+            log.info("Matches per page is {}", matches);
             transaction.commit();
         } catch (Exception e) {
             log.error("Error while getting matches:", e);
@@ -41,7 +46,6 @@ public class MatchRepositoryImpl implements MatchRepository {
         }
         return matches;
     }
-
 
     @Override
     public List<Match> getMatchesByPlayerName(String playerName) throws RepositoryException {
@@ -53,7 +57,7 @@ public class MatchRepositoryImpl implements MatchRepository {
             Query<Match> query = session.createQuery("from Match m where lower(m.firstPlayer.name) = :playerName or lower(m.secondPlayer.name) = :playerName", Match.class);
             query.setParameter("playerName", playerName);
             matches = query.getResultList();
-            log.info("Extracted matches: {}", matches);
+            log.info("Matches by PlayerName is: {}", matches);
             transaction.commit();
         } catch (Exception e) {
             log.error("Error while getting matches:", e);
@@ -84,4 +88,5 @@ public class MatchRepositoryImpl implements MatchRepository {
             return addedMatch;
         }
     }
+
 }

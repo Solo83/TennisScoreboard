@@ -1,9 +1,11 @@
 package com.solo83.tennisscoreboard.controller;
 
+import com.solo83.tennisscoreboard.dto.MatchSearchRequest;
+import com.solo83.tennisscoreboard.dto.Page;
 import com.solo83.tennisscoreboard.entity.Match;
-import com.solo83.tennisscoreboard.service.MatchesPaginationService;
+import com.solo83.tennisscoreboard.service.FinishedMatchesPersistenceService;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
-import jakarta.servlet.RequestDispatcher;
+import com.solo83.tennisscoreboard.dto.Pageable;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,52 +14,41 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @WebServlet(value = "/matches")
 public class Matches extends HttpServlet {
 
-    private final MatchesPaginationService matchesPaginationService = MatchesPaginationService.getInstance();
+    private final FinishedMatchesPersistenceService finishedMatchesPersistenceService = FinishedMatchesPersistenceService.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int pageNumber = 1;
-        int noOfRecords = 0;
-        int noOfPages;
-        List<Match> matchesPage = List.of();
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            String playerName = req.getParameter("filter_by_player_name");
+            int pageNumber = getPageNumber(req.getParameter("page"));
 
-        String playerName = req.getParameter("filter_by_player_name");
-        String page = req.getParameter("page");
+            Pageable pageable = createPageable(pageNumber);
+            MatchSearchRequest matchSearchRequest = new MatchSearchRequest(playerName);
+            Page<Match> matchesPage = finishedMatchesPersistenceService.searchMatches(pageable, matchSearchRequest);
 
-        if (playerName != null && !playerName.isEmpty()) {
-            try {
-                if (page != null) {
-                    pageNumber = Integer.parseInt(req.getParameter("page"));
-                }
-                req.setAttribute("playerName", playerName);
-                matchesPage = matchesPaginationService.getMatchesPageByPlayerName(playerName, pageNumber);
-                noOfRecords = matchesPaginationService.getMatchesCountByPlayerName(playerName);
-            } catch (RepositoryException e) {
-                req.setAttribute("error", e);
-            }
-        } else {
-            if (page != null) {
-                pageNumber = Integer.parseInt(req.getParameter("page"));
-            }
-            try {
-                matchesPage = matchesPaginationService.getMatchesPage(pageNumber);
-                noOfRecords = matchesPaginationService.getAllMatchesCount();
-            } catch (RepositoryException e) {
-                req.setAttribute("error", e);
-            }
+            req.setAttribute("playerName", playerName);
+            req.setAttribute("matchesList", matchesPage.getMatches());
+            req.setAttribute("noOfPages", matchesPage.getPagesQuantity());
+            req.setAttribute("currentPage", pageNumber);
+
+            req.getRequestDispatcher("matches.jsp").forward(req, resp);
+        } catch (RepositoryException e) {
+            req.setAttribute("error", e);
         }
+    }
 
-        noOfPages = matchesPaginationService.getNoOfPages(noOfRecords);
-        req.setAttribute("matchesList", matchesPage);
-        req.setAttribute("noOfPages", noOfPages);
-        req.setAttribute("currentPage", pageNumber);
-        RequestDispatcher view = req.getRequestDispatcher("matches.jsp");
-        view.forward(req, resp);
+    private int getPageNumber(String page) {
+        return (page != null) ? Integer.parseInt(page) : 1;
+    }
+
+    private Pageable createPageable(int pageNumber) {
+        Pageable pageable = new Pageable();
+        pageable.setPageNumber(pageNumber);
+        return pageable;
     }
 }

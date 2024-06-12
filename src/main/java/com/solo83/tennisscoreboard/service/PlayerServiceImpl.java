@@ -32,10 +32,12 @@ public class PlayerServiceImpl implements PlayerService {
         try {
             currentPlayer = playerRepository.getPlayerByName(player.getName());
         } catch (RepositoryException e) {
+            log.error("Error retrieving player by name: {}", player.getName(), e);
             currentPlayer = playerRepository.save(player);
         }
-        log.info("Existing player: {}", currentPlayer.orElse(null));
 
-        return currentPlayer.orElse(null);
+        Player result = currentPlayer.orElseThrow(() -> new RepositoryException("Player could not be created or retrieved"));
+        log.info("Existing player: {}", result);
+        return result;
     }
 }

@@ -47,7 +47,6 @@ public class MatchScore extends HttpServlet {
                 log.error(e.getMessage());
                 req.setAttribute("error", e.getMessage());
             }
-
         }
     }
 }
