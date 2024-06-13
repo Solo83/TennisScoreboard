@@ -36,7 +36,6 @@ class MatchScoreCalculationServiceTest {
         ongoingMatch.setFirstPlayer(firstPlayer);
         ongoingMatch.setSecondPlayer(secondPlayer);
 
-
     }
 
     @Test
@@ -50,14 +49,27 @@ class MatchScoreCalculationServiceTest {
     }
 
     @Test
-    void testCalculateMatchScoreDraw() {
+    void testCalculateMatchScoreAdvantage() {
         firstPlayerScore.setPoints(40);
-        secondPlayerScore.setPoints(40);
+        secondPlayerScore.setPoints(30);
         matchScoreCalculationService.calculateMatchScore(2, ongoingMatch);
 
-        assertTrue(ongoingMatch.isDraw());
+        assertTrue(ongoingMatch.isAdvantage());
         assertEquals(0, firstPlayerScore.getPoints());
         assertEquals(0, secondPlayerScore.getPoints());
+    }
+
+    @Test
+    void testCalculateMatchScoreFirstPlayerWinAdvantage() {
+        firstPlayerScore.setPoints(40);
+        secondPlayerScore.setPoints(30);
+        matchScoreCalculationService.calculateMatchScore(2, ongoingMatch);
+        matchScoreCalculationService.calculateMatchScore(1, ongoingMatch);
+        matchScoreCalculationService.calculateMatchScore(1, ongoingMatch);
+
+        assertFalse(ongoingMatch.isAdvantage());
+        assertEquals(1, firstPlayerScore.getGame());
+
     }
 
     @Test
@@ -92,12 +104,14 @@ class MatchScoreCalculationServiceTest {
 
     @Test
     void testHandleRegularPlayDraw() {
-        firstPlayerScore.setPoints(40);
+        firstPlayerScore.setPoints(30);
         secondPlayerScore.setPoints(40);
 
         matchScoreCalculationService.handleRegularPlay(1, 1, firstPlayerScore, secondPlayerScore, ongoingMatch);
-        assertTrue(ongoingMatch.isDraw());
+        assertTrue(ongoingMatch.isAdvantage());
     }
+
+
 
     @Test
     void testHandleTieBreakPlay() {

@@ -27,6 +27,10 @@ public class MatchScore extends HttpServlet {
         UUID uuid = UUID.fromString(req.getParameter("uuid"));
         Integer playerId = Integer.valueOf(req.getParameter("playerId"));
         OngoingMatch currentOngoingMatch = ongoingMatchesService.getMatch(uuid);
+        if (currentOngoingMatch == null) {
+            resp.sendRedirect("index.jsp");
+            return;
+        }
         boolean isFinished = matchScoreCalculationService.calculateMatchScore(playerId, currentOngoingMatch);
 
         if (!isFinished) {
@@ -36,14 +40,13 @@ public class MatchScore extends HttpServlet {
                 req.setAttribute("currentMatch", currentOngoingMatch);
                 req.getRequestDispatcher("finished-match.jsp").forward(req, resp);
                 ongoingMatchesService.removeMatch(uuid);
-                log.info("Match removed");
+                log.info("Match removed from ongoing matches");
                 ongoingMatchesService.persistMatch(currentOngoingMatch);
                 log.info("Match added to repository");
             } catch (RepositoryException e) {
                 log.error(e.getMessage());
                 req.setAttribute("error", e.getMessage());
             }
-
         }
     }
 }

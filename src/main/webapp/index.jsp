@@ -7,7 +7,7 @@
 <div id="body">
      <div id="content">Tennis score board
         <p><a href="new-match.jsp">NEW</a> - start new match</p>
-        <p><a href="">MATCHES</a> - list of finished matches</p>
+        <p><a href="matches">MATCHES</a> - list of finished matches</p>
     </div>
 </div>
 </body>
