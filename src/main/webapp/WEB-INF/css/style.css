@@ -2,9 +2,10 @@ body {
     margin: 0;
 }
 
-#header{
+#header {
 
-    a { color: white;
+    a {
+        color: white;
         font-weight: bold;
         text-decoration: none;
         margin-right: 20px;
@@ -16,28 +17,55 @@ body {
     height: 50px;
 }
 
-#body{
+#body {
     background-color: #000000;
     height: 100%;
 }
 
-#table{
+#table {
     color: white;
     align-self: center;
     text-align: center;
-
 }
 
-#error{
+#finish_table {
+
+    color: white;
+    align-self: center;
+    text-align: center;
+    border-spacing: 10px;
+}
+
+#error {
     color: red;
     text-align: left;
     font-size: small;
 }
 
-#content{
+#redefined_a {
+    color: #2353b3;
 
-    a { color: #2353b3;
-        font-size: large;
+    text-align: left;
+    font-size: medium;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#redefined_button{
+    background-color: #2353b3;
+    color: white;
+    margin: 0;
+    border: none;
+    font-size: medium;
+    padding: 5px 15px;
+}
+
+#content {
+
+    a {
+        color: #2353b3;
+        text-align: left;
+        font-size: medium;
         font-weight: bold;
         text-decoration: none;
     }
@@ -53,7 +81,7 @@ body {
         color: white;
         padding: 15px 32px;
         text-align: left;
-        display:block;
+        display: block;
         margin: 0;
         border: none;
         font-size: medium;
@@ -72,6 +100,7 @@ body {
     padding: 10px;
     border-radius: 20px;
     background-color: #323232;
+
 
 
 }

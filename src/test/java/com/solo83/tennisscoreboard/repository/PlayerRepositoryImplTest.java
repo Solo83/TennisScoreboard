@@ -8,7 +8,7 @@ class PlayerRepositoryImplTest {
     private final PlayerRepository repository = PlayerRepositoryImpl.getInstance();
 
     @Test
-    void transaction_rollingBack_whenException_whileAddingPlayerAttempt() {
+    void transactionRollingBackWhenExceptionWhileAddingPlayerAttempt() {
 
         Assertions.assertThrows(RepositoryException.class,
                 () -> repository.save(null));
