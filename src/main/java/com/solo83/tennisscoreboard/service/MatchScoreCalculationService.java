@@ -31,7 +31,7 @@ public class MatchScoreCalculationService {
         PlayerScore firstPlayerScore = ongoingMatch.getFirstPlayerScore();
         PlayerScore secondPlayerScore = ongoingMatch.getSecondPlayerScore();
         boolean isTieBreak = ongoingMatch.isTieBreak();
-        boolean isDraw = ongoingMatch.isAdvantage();
+        boolean isAdvantage = ongoingMatch.isAdvantage();
 
         if (checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch)) {
             log.info("Match finished");
@@ -40,7 +40,7 @@ public class MatchScoreCalculationService {
 
         if (isTieBreak) {
             handleTieBreakPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
-        } else if (isDraw) {
+        } else if (isAdvantage) {
             handleAdvantagePlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         } else {
             handleRegularPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
@@ -68,16 +68,20 @@ public class MatchScoreCalculationService {
 
     void handleRegularPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
 
-        setNextPoint(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
-        checkAdvantageScore(firstPlayerScore, secondPlayerScore, ongoingMatch);
+        if (!ongoingMatch.isAdvantage()) {
+            setNextPoint(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
+            checkAdvantageScore(firstPlayerScore, secondPlayerScore, ongoingMatch);
+        }
 
         if (!TENNIS_POINTS.contains(firstPlayerScore.getPoints())) {
             firstPlayerScore.incrementGame();
             resetPoints(ongoingMatch);
+
         } else if (!TENNIS_POINTS.contains(secondPlayerScore.getPoints())) {
             secondPlayerScore.incrementGame();
             resetPoints(ongoingMatch);
         }
+
     }
 
     void checkAdvantageScore(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
@@ -92,11 +96,17 @@ public class MatchScoreCalculationService {
         incrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
         int pointDifference = firstPlayerScore.getPoints() - secondPlayerScore.getPoints();
 
+        if ((Math.abs(pointDifference) == 0)) {
+            decrementPointsInverted(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
+        }
+
         if (Math.abs(pointDifference) == POINTS_DIFFERENCE) {
             if (pointDifference > 0) {
                 firstPlayerScore.incrementGame();
+
             } else {
                 secondPlayerScore.incrementGame();
+
             }
             ongoingMatch.setAdvantage(false);
             resetPoints(ongoingMatch);
@@ -164,6 +174,14 @@ public class MatchScoreCalculationService {
             firstPlayerScore.incrementPoints();
         } else {
             secondPlayerScore.incrementPoints();
+        }
+    }
+
+    private void decrementPointsInverted(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore) {
+        if (Objects.equals(playerId, firstPlayerID)) {
+            secondPlayerScore.decrementPoints();
+        } else {
+            firstPlayerScore.decrementPoints();
         }
     }
 

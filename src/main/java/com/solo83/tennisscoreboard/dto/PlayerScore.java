@@ -36,6 +36,11 @@ public class PlayerScore {
         this.points++;
     }
 
+    public void decrementPoints() {
+        this.points--;
+
+    }
+
     public void nextPoint(List<Integer> tennisPoints) {
         int updatedPointsIndex = tennisPoints.indexOf(this.points) + 1;
         this.points = (updatedPointsIndex < tennisPoints.size()) ? tennisPoints.get(updatedPointsIndex) : -1;
