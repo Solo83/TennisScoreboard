@@ -54,8 +54,8 @@ public class MatchRepositoryImpl implements MatchRepository {
         List<Match> matches;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Query<Match> query = session.createQuery("from Match m where lower(m.firstPlayer.name) = :playerName or lower(m.secondPlayer.name) = :playerName", Match.class);
-            query.setParameter("playerName", playerName);
+            Query<Match> query = session.createQuery("from Match m where lower(m.firstPlayer.name) like :playerName or lower(m.secondPlayer.name) like :playerName", Match.class);
+            query.setParameter("playerName", "%"+playerName+"%");
             matches = query.getResultList();
             log.info("Matches by PlayerName is: {}", matches);
             transaction.commit();
