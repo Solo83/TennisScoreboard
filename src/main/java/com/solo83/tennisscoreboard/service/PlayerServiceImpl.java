@@ -5,6 +5,7 @@ import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.repository.PlayerRepository;
 import com.solo83.tennisscoreboard.repository.PlayerRepositoryImpl;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
+import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
@@ -40,4 +41,12 @@ public class PlayerServiceImpl implements PlayerService {
         log.info("Existing player: {}", result);
         return result;
     }
+
+    @Override
+    public void checkPlayersEquality(GetPlayerRequest player1, GetPlayerRequest player2) throws ValidatorException {
+        if (player1.name().equals(player2.name()))
+        {throw new ValidatorException("Player names can't be equal");
+        }
+    }
+
 }
