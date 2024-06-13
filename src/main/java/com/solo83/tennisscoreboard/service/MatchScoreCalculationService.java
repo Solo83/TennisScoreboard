@@ -97,7 +97,7 @@ public class MatchScoreCalculationService {
         int pointDifference = firstPlayerScore.getPoints() - secondPlayerScore.getPoints();
 
         if ((Math.abs(pointDifference) == 0)) {
-            decrementPointsInverted(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
+            invertAndDecrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
         }
 
         if (Math.abs(pointDifference) == POINTS_DIFFERENCE) {
@@ -177,11 +177,13 @@ public class MatchScoreCalculationService {
         }
     }
 
-    private void decrementPointsInverted(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore) {
+    private void invertAndDecrementPoints(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore) {
         if (Objects.equals(playerId, firstPlayerID)) {
             secondPlayerScore.decrementPoints();
+            firstPlayerScore.resetPoints();
         } else {
             firstPlayerScore.decrementPoints();
+            secondPlayerScore.resetPoints();
         }
     }
 
