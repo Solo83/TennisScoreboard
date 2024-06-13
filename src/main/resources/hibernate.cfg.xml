@@ -9,8 +9,8 @@
         <property name="connection.username">sa</property>
         <property name="connection.password"></property>
         <property name="show_sql">true</property>
-        <property name="hbm2ddl.auto">create-drop</property>
-        <property name="hbm2ddl.import_files">Data\data.sql</property>
+        <property name="hbm2ddl.auto">create</property>
+        <property name="hbm2ddl.import_files">import.sql</property>
         <mapping class="com.solo83.tennisscoreboard.entity.Player" />
         <mapping class="com.solo83.tennisscoreboard.entity.Match" />
     </session-factory>
