@@ -24,7 +24,7 @@ public class PlayerNameValidator {
 
         if (parameterValue.trim().isEmpty() || !pattern.matcher(parameterValue).find()) {
             log.error("Parameter value for {} is not valid", parameterName);
-            throw new ValidatorException("Value '" + parameterValue + "' is not valid for '" + parameterName + "'");
+            throw new ValidatorException("The player's name must contain two words separated by a space, incorrect: " + parameterName);
         }
 
         log.info("Parameter value is VALID for {}", parameterName);
