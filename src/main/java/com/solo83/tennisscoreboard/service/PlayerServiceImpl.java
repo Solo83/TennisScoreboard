@@ -2,8 +2,7 @@ package com.solo83.tennisscoreboard.service;
 
 import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
 import com.solo83.tennisscoreboard.entity.Player;
-import com.solo83.tennisscoreboard.repository.PlayerRepository;
-import com.solo83.tennisscoreboard.repository.PlayerRepositoryImpl;
+import com.solo83.tennisscoreboard.criteriarepository.PlayerRepository;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,7 @@ import java.util.Optional;
 
 @Slf4j
 public class PlayerServiceImpl implements PlayerService {
-    private final PlayerRepository playerRepository = PlayerRepositoryImpl.getInstance();
+    private final PlayerRepository playerRepository =  PlayerRepository.getInstance();
     private static PlayerServiceImpl instance;
     private final Mapper mapper = Mapper.getInstance();
 

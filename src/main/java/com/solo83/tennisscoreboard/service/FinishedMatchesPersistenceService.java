@@ -1,17 +1,16 @@
 package com.solo83.tennisscoreboard.service;
 
+import com.solo83.tennisscoreboard.criteriarepository.MatchRepository;
 import com.solo83.tennisscoreboard.dto.MatchSearchRequest;
 import com.solo83.tennisscoreboard.dto.Page;
 import com.solo83.tennisscoreboard.entity.Match;
-import com.solo83.tennisscoreboard.repository.MatchRepository;
-import com.solo83.tennisscoreboard.repository.MatchRepositoryImpl;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.dto.Pageable;
 
 import java.util.List;
 
 public class FinishedMatchesPersistenceService {
-    private final MatchRepository matchRepository = MatchRepositoryImpl.getInstance();
+    private final MatchRepository matchRepository = MatchRepository.getInstance();
     private static FinishedMatchesPersistenceService instance;
 
     private FinishedMatchesPersistenceService() {
