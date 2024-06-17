@@ -1,28 +1,31 @@
-package com.solo83.tennisscoreboard.repository;
+package com.solo83.tennisscoreboard.repository.criteriarepository;
 
 import com.solo83.tennisscoreboard.entity.Player;
+import com.solo83.tennisscoreboard.repository.PlayerRepository;
 import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
 
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class PlayerRepositoryImpl implements PlayerRepository {
+public class PlayerRepositoryCrit implements PlayerRepository {
+    private static PlayerRepositoryCrit instance;
 
-    private static PlayerRepositoryImpl instance;
-
-    private PlayerRepositoryImpl() {
+    private PlayerRepositoryCrit() {
     }
 
-    public static PlayerRepositoryImpl getInstance() {
+    public static PlayerRepositoryCrit getInstance() {
         if (instance == null) {
-            instance = new PlayerRepositoryImpl();
+            instance = new PlayerRepositoryCrit();
         }
         return instance;
     }
@@ -33,10 +36,14 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         Transaction transaction;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Query<Player> query = session.createQuery("from Player where name = :playerName", Player.class);
-            query.setParameter("playerName", playerName);
-            player = Optional.of(query.getSingleResult());
-            log.info("Extracted player: {}", player.get());
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Player> critQuery = builder.createQuery(Player.class);
+            Root<Player> root = critQuery.from(Player.class);
+            critQuery.select(root);
+            critQuery.where(builder.equal(root.get("name"), playerName));
+            Query<Player> query = session.createQuery(critQuery);
+            player = query.uniqueResultOptional();
+            log.info("Player extracted by CriteriaBuilder: {}",player.get());
             transaction.commit();
         } catch (Exception e) {
             log.error("Error while getting player:", e);
@@ -51,9 +58,13 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         List<Player> players;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Query<Player> query = session.createQuery("from Player", Player.class);
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Player> criteria = builder.createQuery(Player.class);
+            Root<Player> root = criteria.from(Player.class);
+            criteria.select(root);
+            Query<Player> query = session.createQuery(criteria);
             players = query.getResultList();
-            log.info("Extracted players: {}", players);
+            log.info("Extracted players from Criteria: {}", players);
             transaction.commit();
         } catch (Exception e) {
             log.error("Error while getting players:", e);
@@ -63,7 +74,6 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         return players;
     }
 
-    @Override
     public Optional<Player>save(Player player) throws RepositoryException {
         Optional<Player> addedPlayer;
         Transaction transaction = null;

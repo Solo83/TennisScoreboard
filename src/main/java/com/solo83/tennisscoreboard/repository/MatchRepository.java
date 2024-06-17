@@ -7,11 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MatchRepository {
-
-    List<Match> getAllMatches() throws RepositoryException;
-
-    List<Match> getMatchesByPlayerName(String playerName) throws RepositoryException;
-
+    List<Match> getAll() throws RepositoryException;
+    List<Match> getAllMatchesByPlayerName(String playerName) throws RepositoryException;
     Optional<Match> save(Match match) throws RepositoryException;
-
 }
