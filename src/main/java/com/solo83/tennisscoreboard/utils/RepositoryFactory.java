@@ -38,13 +38,7 @@ public class RepositoryFactory {
         Properties properties = getProperties();
         String matchRepository = properties.getProperty("matchRepository");
 
-        MatchRepositoryCrit matchCriteria = MatchRepositoryCrit.getInstance();
-        MatchRepositoryImpl matchStandart = MatchRepositoryImpl.getInstance();
-
-        if (matchRepository.equals("criteria")) {return matchCriteria;}
-        else if (matchRepository.equals("standart")) {return matchStandart;}
-
-        return null;
+        return (matchRepository.equals("criteria")) ? MatchRepositoryCrit.getInstance() : MatchRepositoryImpl.getInstance();
 
     }
 
@@ -52,13 +46,7 @@ public class RepositoryFactory {
         Properties properties = getProperties();
         String playerRepository = properties.getProperty("matchRepository");
 
-        PlayerRepositoryCrit playerCriteria = PlayerRepositoryCrit.getInstance();
-        PlayerRepositoryImpl playerStandart = PlayerRepositoryImpl.getInstance();
-
-        if (playerRepository.equals("criteria")) {return playerCriteria;}
-        else if (playerRepository.equals("standart")) {return playerStandart;}
-
-        return null;
+        return (playerRepository.equals("criteria")) ?  PlayerRepositoryCrit.getInstance() : PlayerRepositoryImpl.getInstance();
 
     }
 }
