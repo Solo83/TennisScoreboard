@@ -1,7 +1,7 @@
 package com.solo83.tennisscoreboard.utils;
 
-import com.solo83.tennisscoreboard.criteriarepository.MatchRepositoryCrit;
-import com.solo83.tennisscoreboard.criteriarepository.PlayerRepositoryCrit;
+import com.solo83.tennisscoreboard.repository.criteriarepository.MatchRepositoryCrit;
+import com.solo83.tennisscoreboard.repository.criteriarepository.PlayerRepositoryCrit;
 import com.solo83.tennisscoreboard.repository.MatchRepository;
 import com.solo83.tennisscoreboard.repository.MatchRepositoryImpl;
 import com.solo83.tennisscoreboard.repository.PlayerRepository;

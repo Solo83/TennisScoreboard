@@ -1,4 +1,4 @@
-package com.solo83.tennisscoreboard.criteriarepository;
+package com.solo83.tennisscoreboard.repository.criteriarepository;
 
 import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.repository.PlayerRepository;
