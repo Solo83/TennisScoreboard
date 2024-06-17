@@ -33,10 +33,6 @@ public class MatchScoreCalculationService {
         boolean isTieBreak = ongoingMatch.isTieBreak();
         boolean isAdvantage = ongoingMatch.isAdvantage();
 
-        if (checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch)) {
-            log.info("Match finished");
-            return true;
-        }
 
         if (isTieBreak) {
             handleTieBreakPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
@@ -46,6 +42,11 @@ public class MatchScoreCalculationService {
             handleRegularPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         }
         checkSetWinner(firstPlayerScore, secondPlayerScore, ongoingMatch);
+
+        if (checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch)) {
+            log.info("Match finished");
+            return true;
+        }
         return false;
     }
 
@@ -99,14 +100,12 @@ public class MatchScoreCalculationService {
         if ((Math.abs(pointDifference) == 0)) {
             invertAndDecrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
         }
-
         if (Math.abs(pointDifference) == POINTS_DIFFERENCE) {
             if (pointDifference > 0) {
                 firstPlayerScore.incrementGame();
 
             } else {
                 secondPlayerScore.incrementGame();
-
             }
             ongoingMatch.setAdvantage(false);
             resetPoints(ongoingMatch);
