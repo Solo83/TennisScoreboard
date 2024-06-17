@@ -30,7 +30,7 @@ public class MatchRepositoryImpl implements MatchRepository {
     }
 
     @Override
-    public List<Match> getAllMatches() throws RepositoryException {
+    public List<Match> getAll() throws RepositoryException {
         Transaction transaction;
         List<Match> matches;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -47,8 +47,8 @@ public class MatchRepositoryImpl implements MatchRepository {
         return matches;
     }
 
-    @Override
-    public List<Match> getMatchesByPlayerName(String playerName) throws RepositoryException {
+
+    public List<Match> getAllMatchesByPlayerName(String playerName) throws RepositoryException {
         playerName = playerName.toLowerCase().trim();
         Transaction transaction;
         List<Match> matches;

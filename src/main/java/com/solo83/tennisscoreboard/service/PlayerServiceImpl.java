@@ -2,7 +2,8 @@ package com.solo83.tennisscoreboard.service;
 
 import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
 import com.solo83.tennisscoreboard.entity.Player;
-import com.solo83.tennisscoreboard.criteriarepository.PlayerRepository;
+import com.solo83.tennisscoreboard.repository.PlayerRepository;
+import com.solo83.tennisscoreboard.utils.RepositoryFactory;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 @Slf4j
 public class PlayerServiceImpl implements PlayerService {
-    private final PlayerRepository playerRepository =  PlayerRepository.getInstance();
+    private final PlayerRepository playerRepository =  new RepositoryFactory().getPlayerRepository();
     private static PlayerServiceImpl instance;
     private final Mapper mapper = Mapper.getInstance();
 
@@ -30,7 +31,7 @@ public class PlayerServiceImpl implements PlayerService {
         Player player = mapper.toPlayer(getPlayerRequest);
         Optional<Player> currentPlayer;
         try {
-            currentPlayer = playerRepository.getPlayerByName(player.getName());
+            currentPlayer = playerRepository.getByName(player.getName());
         } catch (RepositoryException e) {
             log.error("Error retrieving player by name: {}", player.getName(), e);
             currentPlayer = playerRepository.save(player);

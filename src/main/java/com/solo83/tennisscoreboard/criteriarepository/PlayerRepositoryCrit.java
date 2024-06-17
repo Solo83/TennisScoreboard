@@ -1,6 +1,7 @@
 package com.solo83.tennisscoreboard.criteriarepository;
 
 import com.solo83.tennisscoreboard.entity.Player;
+import com.solo83.tennisscoreboard.repository.PlayerRepository;
 import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -12,23 +13,25 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class PlayerRepository {
-    private static PlayerRepository instance;
+public class PlayerRepositoryCrit implements PlayerRepository {
+    private static PlayerRepositoryCrit instance;
 
-    private PlayerRepository() {
+    private PlayerRepositoryCrit() {
     }
 
-    public static PlayerRepository getInstance() {
+    public static PlayerRepositoryCrit getInstance() {
         if (instance == null) {
-            instance = new PlayerRepository();
+            instance = new PlayerRepositoryCrit();
         }
         return instance;
     }
 
-    public Optional<Player> getPlayerByName(String playerName) throws RepositoryException {
+    @Override
+    public Optional<Player> getByName(String playerName) throws RepositoryException {
         Optional<Player> player;
         Transaction transaction;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -47,6 +50,28 @@ public class PlayerRepository {
             throw new RepositoryException("Error while getting player by Name");
         }
         return player;
+    }
+
+    @Override
+    public List<Player> getAll() throws RepositoryException {
+        Transaction transaction;
+        List<Player> players;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Player> criteria = builder.createQuery(Player.class);
+            Root<Player> root = criteria.from(Player.class);
+            criteria.select(root);
+            Query<Player> query = session.createQuery(criteria);
+            players = query.getResultList();
+            log.info("Extracted players from Criteria: {}", players);
+            transaction.commit();
+        } catch (Exception e) {
+            log.error("Error while getting players:", e);
+            throw new RepositoryException("Error while getting players");
+
+        }
+        return players;
     }
 
     public Optional<Player>save(Player player) throws RepositoryException {

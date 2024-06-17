@@ -2,6 +2,7 @@ package com.solo83.tennisscoreboard.criteriarepository;
 
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.entity.Player;
+import com.solo83.tennisscoreboard.repository.MatchRepository;
 import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -17,21 +18,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class MatchRepository {
+public class MatchRepositoryCrit implements MatchRepository {
 
-    private static MatchRepository instance;
+    private static MatchRepositoryCrit instance;
 
-    private MatchRepository() {
+    private MatchRepositoryCrit() {
     }
 
-    public static MatchRepository getInstance() {
+    public static MatchRepositoryCrit getInstance() {
         if (instance == null) {
-            instance = new MatchRepository();
+            instance = new MatchRepositoryCrit();
         }
         return instance;
     }
 
-    public List<Match> getAllMatches() throws RepositoryException {
+    @Override
+    public List<Match> getAll() throws RepositoryException {
         Transaction transaction;
         List<Match> matches;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -52,8 +54,7 @@ public class MatchRepository {
         return matches;
     }
 
-
-    public List<Match> getMatchesByPlayerName(String playerName) throws RepositoryException {
+    public List<Match> getAllMatchesByPlayerName(String playerName) throws RepositoryException {
         Transaction transaction;
         List<Match> matches;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -77,6 +78,7 @@ public class MatchRepository {
         return matches;
     }
 
+    @Override
     public Optional<Match> save(Match match) throws RepositoryException {
         Optional<Match> addedMatch;
         Transaction transaction = null;

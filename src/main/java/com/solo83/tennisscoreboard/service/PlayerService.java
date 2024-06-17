@@ -8,6 +8,5 @@ import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
 
 public interface PlayerService {
     Player createOrGet(GetPlayerRequest getPlayerRequest) throws RepositoryException;
-
     void checkPlayersEquality(GetPlayerRequest player1, GetPlayerRequest player2) throws ValidatorException;
 }

@@ -28,7 +28,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    public Optional<Player> getPlayerByName(String playerName) throws RepositoryException {
+    public Optional<Player> getByName(String playerName) throws RepositoryException {
         Optional<Player> player;
         Transaction transaction;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -46,7 +46,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    public List<Player> getAllPlayers() throws RepositoryException {
+    public List<Player> getAll() throws RepositoryException {
         Transaction transaction;
         List<Player> players;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
