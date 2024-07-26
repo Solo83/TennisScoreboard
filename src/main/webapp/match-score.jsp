@@ -9,7 +9,7 @@
     String player2name;
     String uuid = request.getParameter("uuid");
     String player1points;
-    String  player2points;
+    String player2points;
     Integer player1set;
     Integer player2set;
     Integer player1game;
@@ -19,7 +19,7 @@
     boolean isAdvantage;
     boolean isTieBreak;
     String points = "POINTS";
-    OngoingMatch currentMatch = OngoingMatchesService.getInstance().getMatch(UUID.fromString(request.getParameter("uuid")));
+    OngoingMatch currentMatch = ((OngoingMatchesService) request.getServletContext().getAttribute("ongoingMatchesService")).getMatch(UUID.fromString(uuid));
     isAdvantage = currentMatch.isAdvantage();
     isTieBreak = currentMatch.isTieBreak();
     player1name = currentMatch.getFirstPlayer().getName();
@@ -32,11 +32,25 @@
     player2points = String.valueOf(currentMatch.getSecondPlayerScore().getPoints());
     player1Id = currentMatch.getFirstPlayer().getId();
     player2Id = currentMatch.getSecondPlayer().getId();
-    if (isAdvantage) {points = "Advantage Started";};
-    if (isTieBreak) {points = "TieBreak Started";}
-    if (isAdvantage && player1points.equals("0")) {player1points = "40";} else if (isAdvantage && player1points.equals("1")) {player1points = "AD";};
-    if (isAdvantage && player2points.equals("0")) {player2points = "40";} else if (isAdvantage && player2points.equals("1")) {player2points = "AD";};
-
+    if (isAdvantage) {
+        points = "Advantage Started";
+    }
+    ;
+    if (isTieBreak) {
+        points = "TieBreak Started";
+    }
+    if (isAdvantage && player1points.equals("0")) {
+        player1points = "40";
+    } else if (isAdvantage && player1points.equals("1")) {
+        player1points = "AD";
+    }
+    ;
+    if (isAdvantage && player2points.equals("0")) {
+        player2points = "40";
+    } else if (isAdvantage && player2points.equals("1")) {
+        player2points = "AD";
+    }
+    ;
 %>
 
 <style>
@@ -44,79 +58,80 @@
 </style>
 <html>
 <body id="body">
-    <div id="content">
-        <table id="table"> Match Started
-            <thead>
-            <tr>
-                <th></th>
-                <th>P1:
-                    <%= player1name
-                    %>
-                </th>
-                <th></th>
-                <th>P2:
-                    <%= player2name
-                    %>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>SETS</td>
-                <td><%= player1set
+<div id="content">
+    <table id="table"> Match Started
+        <thead>
+        <tr>
+            <th></th>
+            <th>P1:
+                <%= player1name
                 %>
-                </td>
-                <td>:</td>
-                <td><%= player2set
+            </th>
+            <th></th>
+            <th>P2:
+                <%= player2name
                 %>
-                </td>
-            </tr>
-            <tr>
-                <td>GAMES</td>
-                <td><%= player1game
-                %>
-                </td>
-                <td>:</td>
-                <td><%= player2game
-                %>
-                </td>
-            </tr>
-            <tr>
-                <td><%= points
-                %></td>
-                <td><%= player1points
-                %>
-                </td>
-                <td>:</td>
-                <td><%= player2points
-                %>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <form action="match-score?uuid=<%=uuid%>" method="post">
-                        <input name="playerId" type="hidden"
-                               value=<%=player1Id%>>
-                        <input type="submit" value="P1 Win Point">
-                    </form>
-                </td>
-                <td></td>
-                <td>
-                    <form action="match-score?uuid=<%=uuid%>" method="post">
-                        <input name="playerId" type="hidden"
-                               value=<%=player2Id%>>
-                        <input type="submit" value="P2 Win Point">
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <c:if test="${not empty error}">
-            <div id="error">
-                    ${error}
-            </div>
-        </c:if>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>SETS</td>
+            <td><%= player1set
+            %>
+            </td>
+            <td>:</td>
+            <td><%= player2set
+            %>
+            </td>
+        </tr>
+        <tr>
+            <td>GAMES</td>
+            <td><%= player1game
+            %>
+            </td>
+            <td>:</td>
+            <td><%= player2game
+            %>
+            </td>
+        </tr>
+        <tr>
+            <td><%= points
+            %>
+            </td>
+            <td><%= player1points
+            %>
+            </td>
+            <td>:</td>
+            <td><%= player2points
+            %>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <form action="match-score?uuid=<%=uuid%>" method="post">
+                    <input name="playerId" type="hidden"
+                           value=<%=player1Id%>>
+                    <input type="submit" value="P1 Win Point">
+                </form>
+            </td>
+            <td></td>
+            <td>
+                <form action="match-score?uuid=<%=uuid%>" method="post">
+                    <input name="playerId" type="hidden"
+                           value=<%=player2Id%>>
+                    <input type="submit" value="P2 Win Point">
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <c:if test="${not empty error}">
+        <div id="error">
+                ${error}
+        </div>
+    </c:if>
 </div>
 </body>
 </html>

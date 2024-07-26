@@ -1,10 +1,10 @@
 package com.solo83.tennisscoreboard.repository;
 import com.solo83.tennisscoreboard.entity.Match;
-import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
@@ -16,15 +16,17 @@ import java.util.Optional;
 public class MatchRepositoryImpl implements MatchRepository {
 
     private static MatchRepositoryImpl instance;
+    private final SessionFactory sessionFactory;
 
     private final int RESULTS_PER_PAGE = 3;
 
-    private MatchRepositoryImpl() {
+    private MatchRepositoryImpl(SessionFactory sessionFactory)
+    {this.sessionFactory = sessionFactory;
     }
 
-    public static MatchRepositoryImpl getInstance() {
+    public static MatchRepositoryImpl getInstance(SessionFactory sessionFactory) {
         if (instance == null) {
-            instance = new MatchRepositoryImpl();
+            instance = new MatchRepositoryImpl(sessionFactory);
         }
         return instance;
     }
@@ -33,7 +35,7 @@ public class MatchRepositoryImpl implements MatchRepository {
     public List<Match> getAll() throws RepositoryException {
         Transaction transaction;
         List<Match> matches;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Query<Match> query = session.createQuery("from Match", Match.class);
             matches = query.getResultList();
@@ -52,7 +54,7 @@ public class MatchRepositoryImpl implements MatchRepository {
         playerName = playerName.toLowerCase().trim();
         Transaction transaction;
         List<Match> matches;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Query<Match> query = session.createQuery("from Match m where lower(m.firstPlayer.name) like :playerName or lower(m.secondPlayer.name) like :playerName", Match.class);
             query.setParameter("playerName", "%"+playerName+"%");
@@ -70,7 +72,7 @@ public class MatchRepositoryImpl implements MatchRepository {
     public Optional<Match> save(Match match) throws RepositoryException {
         Optional<Match> addedMatch;
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             try {
                 transaction = session.beginTransaction();
                 session.persist(match);

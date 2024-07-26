@@ -1,9 +1,8 @@
 package com.solo83.tennisscoreboard.service;
 
-import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
+import com.solo83.tennisscoreboard.dto.PlayerFromRequest;
 import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.repository.PlayerRepository;
-import com.solo83.tennisscoreboard.utils.RepositoryFactory;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,23 +11,25 @@ import java.util.Optional;
 
 @Slf4j
 public class PlayerServiceImpl implements PlayerService {
-    private final PlayerRepository playerRepository =  new RepositoryFactory().getPlayerRepository();
     private static PlayerServiceImpl instance;
-    private final Mapper mapper = Mapper.getInstance();
+    private final Mapper mapper;
+    private final PlayerRepository playerRepository;
 
-    private PlayerServiceImpl() {
+    private PlayerServiceImpl(PlayerRepository playerRepository,Mapper mapper) {
+        this.playerRepository = playerRepository;
+        this.mapper = mapper;
     }
 
-    public static PlayerServiceImpl getInstance() {
+    public static PlayerServiceImpl getInstance(PlayerRepository playerRepository,Mapper mapper) {
         if (instance == null) {
-            instance = new PlayerServiceImpl();
+            instance = new PlayerServiceImpl(playerRepository,mapper);
         }
         return instance;
     }
 
     @Override
-    public Player createOrGet(GetPlayerRequest getPlayerRequest) throws RepositoryException {
-        Player player = mapper.toPlayer(getPlayerRequest);
+    public Player createOrGet(PlayerFromRequest playerFromRequest) throws RepositoryException {
+        Player player = mapper.toPlayer(playerFromRequest);
         Optional<Player> currentPlayer;
         try {
             currentPlayer = playerRepository.getByName(player.getName());
@@ -36,17 +37,15 @@ public class PlayerServiceImpl implements PlayerService {
             log.error("Error retrieving player by name: {}", player.getName(), e);
             currentPlayer = playerRepository.save(player);
         }
-
         Player result = currentPlayer.orElseThrow(() -> new RepositoryException("Player could not be created or retrieved"));
         log.info("Existing player: {}", result);
         return result;
     }
 
     @Override
-    public void checkPlayersEquality(GetPlayerRequest player1, GetPlayerRequest player2) throws ValidatorException {
+    public void checkPlayersEquality(PlayerFromRequest player1, PlayerFromRequest player2) throws ValidatorException {
         if (player1.name().equals(player2.name()))
         {throw new ValidatorException("Player names can't be equal");
         }
     }
-
 }

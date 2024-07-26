@@ -1,11 +1,11 @@
 package com.solo83.tennisscoreboard.repository;
 
 import com.solo83.tennisscoreboard.entity.Player;
-import com.solo83.tennisscoreboard.utils.HibernateUtil;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
@@ -16,13 +16,15 @@ import java.util.Optional;
 public class PlayerRepositoryImpl implements PlayerRepository {
 
     private static PlayerRepositoryImpl instance;
+    private final SessionFactory sessionFactory;
 
-    private PlayerRepositoryImpl() {
+    private PlayerRepositoryImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
-    public static PlayerRepositoryImpl getInstance() {
+    public static PlayerRepositoryImpl getInstance(SessionFactory sessionFactory) {
         if (instance == null) {
-            instance = new PlayerRepositoryImpl();
+            instance = new PlayerRepositoryImpl(sessionFactory);
         }
         return instance;
     }
@@ -31,7 +33,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     public Optional<Player> getByName(String playerName) throws RepositoryException {
         Optional<Player> player;
         Transaction transaction;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Query<Player> query = session.createQuery("from Player where name = :playerName", Player.class);
             query.setParameter("playerName", playerName);
@@ -49,7 +51,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     public List<Player> getAll() throws RepositoryException {
         Transaction transaction;
         List<Player> players;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Query<Player> query = session.createQuery("from Player", Player.class);
             players = query.getResultList();
@@ -58,16 +60,15 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         } catch (Exception e) {
             log.error("Error while getting players:", e);
             throw new RepositoryException("Error while getting players");
-
         }
         return players;
     }
 
     @Override
-    public Optional<Player>save(Player player) throws RepositoryException {
+    public Optional<Player> save(Player player) throws RepositoryException {
         Optional<Player> addedPlayer;
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             try {
                 transaction = session.beginTransaction();
                 session.persist(player);

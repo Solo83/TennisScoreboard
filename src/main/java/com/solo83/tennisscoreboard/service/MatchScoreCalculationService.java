@@ -26,14 +26,11 @@ public class MatchScoreCalculationService {
     }
 
     public boolean calculateMatchScore(Integer playerId, OngoingMatch ongoingMatch) {
-
         Integer firstPlayerID = ongoingMatch.getFirstPlayer().getId();
         PlayerScore firstPlayerScore = ongoingMatch.getFirstPlayerScore();
         PlayerScore secondPlayerScore = ongoingMatch.getSecondPlayerScore();
         boolean isTieBreak = ongoingMatch.isTieBreak();
         boolean isAdvantage = ongoingMatch.isAdvantage();
-
-
         if (isTieBreak) {
             handleTieBreakPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         } else if (isAdvantage) {
@@ -42,7 +39,6 @@ public class MatchScoreCalculationService {
             handleRegularPlay(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore, ongoingMatch);
         }
         checkSetWinner(firstPlayerScore, secondPlayerScore, ongoingMatch);
-
         if (checkMatchWinner(firstPlayerScore, secondPlayerScore, ongoingMatch)) {
             log.info("Match finished");
             return true;
@@ -53,7 +49,6 @@ public class MatchScoreCalculationService {
     boolean checkMatchWinner(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
         int player1sets = firstPlayerScore.getSets();
         int player2sets = secondPlayerScore.getSets();
-
         int TOTAL_SETS = 3;
         if (player1sets == TOTAL_SETS / 2 + 1) {
             ongoingMatch.setWinner(ongoingMatch.getFirstPlayer());
@@ -68,12 +63,10 @@ public class MatchScoreCalculationService {
     }
 
     void handleRegularPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
-
         if (!ongoingMatch.isAdvantage()) {
             setNextPoint(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
             checkAdvantageScore(firstPlayerScore, secondPlayerScore, ongoingMatch);
         }
-
         if (!TENNIS_POINTS.contains(firstPlayerScore.getPoints())) {
             firstPlayerScore.incrementGame();
             resetPoints(ongoingMatch);
@@ -82,7 +75,6 @@ public class MatchScoreCalculationService {
             secondPlayerScore.incrementGame();
             resetPoints(ongoingMatch);
         }
-
     }
 
     void checkAdvantageScore(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
@@ -93,10 +85,8 @@ public class MatchScoreCalculationService {
     }
 
     private void handleAdvantagePlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
-
         incrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
         int pointDifference = firstPlayerScore.getPoints() - secondPlayerScore.getPoints();
-
         if ((Math.abs(pointDifference) == 0)) {
             invertAndDecrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
         }
@@ -117,18 +107,17 @@ public class MatchScoreCalculationService {
         int player2games = secondPlayerScore.getGame();
         int gamesDifference = player1games - player2games;
         boolean isTieBreak = ongoingMatch.isTieBreak();
-
         int TOTAL_GAMES = 6;
         if (!isTieBreak && player1games == TOTAL_GAMES && player2games == TOTAL_GAMES) {
             handleTieBreak(ongoingMatch);
         } else if (Math.abs(gamesDifference) >= POINTS_DIFFERENCE && (player1games >= TOTAL_GAMES || player2games >= TOTAL_GAMES)) {
             if (gamesDifference > 0) {
                 firstPlayerScore.incrementSet();
-                saveGames(firstPlayerScore,secondPlayerScore,player1games,player2games);
+                saveGames(firstPlayerScore, secondPlayerScore, player1games, player2games);
                 log.info("First player won SET, score saved");
             } else {
                 secondPlayerScore.incrementSet();
-                saveGames(firstPlayerScore,secondPlayerScore,player1games,player2games);
+                saveGames(firstPlayerScore, secondPlayerScore, player1games, player2games);
                 log.info("Second player won SET, score saved");
             }
             resetGames(ongoingMatch);
@@ -136,22 +125,19 @@ public class MatchScoreCalculationService {
     }
 
     void handleTieBreakPlay(Integer playerId, Integer firstPlayerID, PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, OngoingMatch ongoingMatch) {
-
         incrementPoints(playerId, firstPlayerID, firstPlayerScore, secondPlayerScore);
-
         int player1points = firstPlayerScore.getPoints();
         int player2points = secondPlayerScore.getPoints();
         int pointDifference = player1points - player2points;
-
         int TIE_BREAK_POINTS = 7;
         if (Math.abs(pointDifference) >= POINTS_DIFFERENCE && (player1points >= TIE_BREAK_POINTS || player2points >= TIE_BREAK_POINTS)) {
             if (pointDifference > 0) {
                 firstPlayerScore.incrementSet();
-                saveGames(firstPlayerScore,secondPlayerScore,TIE_BREAK_POINTS,secondPlayerScore.getGame());
+                saveGames(firstPlayerScore, secondPlayerScore, TIE_BREAK_POINTS, secondPlayerScore.getGame());
                 log.info("First player won TIE_BREAK, score saved");
             } else {
                 secondPlayerScore.incrementSet();
-                saveGames(firstPlayerScore,secondPlayerScore,firstPlayerScore.getGame(),TIE_BREAK_POINTS);
+                saveGames(firstPlayerScore, secondPlayerScore, firstPlayerScore.getGame(), TIE_BREAK_POINTS);
                 log.info("Second player won TIE_BREAK, score saved");
             }
             resetGames(ongoingMatch);
@@ -210,5 +196,4 @@ public class MatchScoreCalculationService {
         firstPlayerScore.save(player1games);
         secondPlayerScore.save(player2games);
     }
-
 }

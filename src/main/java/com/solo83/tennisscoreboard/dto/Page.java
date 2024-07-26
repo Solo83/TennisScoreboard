@@ -8,6 +8,4 @@ import java.util.List;
 public class Page <Match>{
     private List<Match> matches;
     private int pagesQuantity;
-
-
 }

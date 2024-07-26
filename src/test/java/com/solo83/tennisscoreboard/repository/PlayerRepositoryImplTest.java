@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class PlayerRepositoryImplTest {
-    private final PlayerRepository repository = new RepositoryFactory().getPlayerRepository();
+    private final PlayerRepository repository = RepositoryFactory.getPlayerRepository();
 
     @Test
     void transactionRollingBackWhenExceptionWhileAddingPlayerAttempt() {

@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class OngoingMatch {
-
     private Player firstPlayer;
     private Player secondPlayer;
     private Player winner;

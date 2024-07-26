@@ -10,7 +10,7 @@ public class PlayerScore {
     private int game;
     private int points;
     private int sets;
-    private ArrayList<Integer> gameScores =  new ArrayList<>();
+    private ArrayList<Integer> gameScores = new ArrayList<>();
 
     public void save(Integer gameValue) {
         gameScores.add(gameValue);
@@ -45,7 +45,4 @@ public class PlayerScore {
         int updatedPointsIndex = tennisPoints.indexOf(this.points) + 1;
         this.points = (updatedPointsIndex < tennisPoints.size()) ? tennisPoints.get(updatedPointsIndex) : -1;
     }
-
-
-
 }

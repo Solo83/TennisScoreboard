@@ -4,22 +4,22 @@ import com.solo83.tennisscoreboard.dto.MatchSearchRequest;
 import com.solo83.tennisscoreboard.dto.Page;
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.repository.MatchRepository;
-import com.solo83.tennisscoreboard.utils.RepositoryFactory;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.dto.Pageable;
 
 import java.util.List;
 
 public class FinishedMatchesPersistenceService {
-    private final MatchRepository matchRepository = new RepositoryFactory().getMatchRepository();
+    private final MatchRepository matchRepository;
     private static FinishedMatchesPersistenceService instance;
 
-    private FinishedMatchesPersistenceService() {
+    private FinishedMatchesPersistenceService(MatchRepository matchRepository) {
+        this.matchRepository = matchRepository;
     }
 
-    public static FinishedMatchesPersistenceService getInstance() {
+    public static FinishedMatchesPersistenceService getInstance(MatchRepository matchRepository) {
         if (instance == null) {
-            instance = new FinishedMatchesPersistenceService();
+            instance = new FinishedMatchesPersistenceService(matchRepository);
         }
         return instance;
     }
@@ -30,13 +30,11 @@ public class FinishedMatchesPersistenceService {
 
     public Page<Match> getFinishedMatchesPage(Pageable pageable, MatchSearchRequest matchSearchRequest) throws RepositoryException {
         List<Match> allMatches;
-
         if (matchSearchRequest.name() == null || matchSearchRequest.name().isEmpty()) {
             allMatches = matchRepository.getAll();
         } else {
             allMatches = matchRepository.getAllMatchesByPlayerName(matchSearchRequest.name());
         }
-
         return createPageFromMatches(pageable, allMatches);
     }
 
@@ -49,5 +47,4 @@ public class FinishedMatchesPersistenceService {
                 .toList());
         return foundedMatchesPage;
     }
-
 }

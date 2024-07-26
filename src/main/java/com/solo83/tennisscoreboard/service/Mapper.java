@@ -1,12 +1,11 @@
 package com.solo83.tennisscoreboard.service;
 
-import com.solo83.tennisscoreboard.dto.GetPlayerRequest;
+import com.solo83.tennisscoreboard.dto.PlayerFromRequest;
 import com.solo83.tennisscoreboard.dto.OngoingMatch;
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.entity.Player;
 
 public class Mapper {
-
     private static Mapper instance;
 
     private Mapper() {
@@ -19,8 +18,8 @@ public class Mapper {
         return instance;
     }
 
-    public Player toPlayer(GetPlayerRequest getPlayerRequest) {
-        return new Player(getPlayerRequest.name());
+    public Player toPlayer(PlayerFromRequest playerFromRequest) {
+        return new Player(playerFromRequest.name());
     }
 
     public Match toMatch(OngoingMatch ongoingMatch) {

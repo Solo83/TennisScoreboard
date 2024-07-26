@@ -4,6 +4,7 @@ import com.solo83.tennisscoreboard.dto.OngoingMatch;
 import com.solo83.tennisscoreboard.service.MatchScoreCalculationService;
 import com.solo83.tennisscoreboard.service.OngoingMatchesService;
 import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,9 +19,15 @@ import java.util.UUID;
 @Slf4j
 @WebServlet(value = "/match-score")
 public class MatchScore extends HttpServlet {
-    private final MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
-    private final OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
+    private MatchScoreCalculationService matchScoreCalculationService;
+    private OngoingMatchesService ongoingMatchesService;
 
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        matchScoreCalculationService = (MatchScoreCalculationService) config.getServletContext().getAttribute("matchScoreCalculationService");
+        ongoingMatchesService = (OngoingMatchesService) config.getServletContext().getAttribute("ongoingMatchesService");
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
@@ -32,7 +39,6 @@ public class MatchScore extends HttpServlet {
             return;
         }
         boolean isFinished = matchScoreCalculationService.calculateMatchScore(playerId, currentOngoingMatch);
-
         if (!isFinished) {
             resp.sendRedirect("match-score.jsp?uuid=" + uuid);
         } else {

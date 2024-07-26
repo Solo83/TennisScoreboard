@@ -1,5 +1,6 @@
 package com.solo83.tennisscoreboard.utils;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -7,13 +8,13 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-
 @Slf4j
+@UtilityClass
 public class HibernateUtil {
-    private static StandardServiceRegistry registry;
-    private static SessionFactory sessionFactory;
+    private StandardServiceRegistry registry;
+    private SessionFactory sessionFactory;
 
-    public static SessionFactory getSessionFactory() {
+    public SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
                 registry = new StandardServiceRegistryBuilder().configure().build();
@@ -29,7 +30,7 @@ public class HibernateUtil {
         return sessionFactory;
     }
 
-    public static void shutdown() {
+    public void shutdown() {
         if (registry != null) {
             StandardServiceRegistryBuilder.destroy(registry);
         }
