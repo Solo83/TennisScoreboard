@@ -32,7 +32,7 @@ public class MatchRepositoryImpl implements MatchRepository {
     }
 
     @Override
-    public List<Match> getAll() throws RepositoryException {
+    public List<Match> getAll(){
         Transaction transaction;
         List<Match> matches;
         try (Session session = sessionFactory.openSession()) {
@@ -50,7 +50,7 @@ public class MatchRepositoryImpl implements MatchRepository {
     }
 
 
-    public List<Match> getAllMatchesByPlayerName(String playerName) throws RepositoryException {
+    public List<Match> getAllMatchesByPlayerName(String playerName){
         playerName = playerName.toLowerCase().trim();
         Transaction transaction;
         List<Match> matches;
@@ -69,7 +69,7 @@ public class MatchRepositoryImpl implements MatchRepository {
     }
 
     @Override
-    public Optional<Match> save(Match match) throws RepositoryException {
+    public Optional<Match> save(Match match){
         Optional<Match> addedMatch;
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {

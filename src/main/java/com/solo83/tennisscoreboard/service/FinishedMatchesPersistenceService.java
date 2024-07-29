@@ -4,7 +4,6 @@ import com.solo83.tennisscoreboard.dto.MatchSearchRequest;
 import com.solo83.tennisscoreboard.dto.Page;
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.repository.MatchRepository;
-import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
 import com.solo83.tennisscoreboard.dto.Pageable;
 
 import java.util.List;
@@ -24,11 +23,11 @@ public class FinishedMatchesPersistenceService {
         return instance;
     }
 
-    public void persistMatch(Match match) throws RepositoryException {
+    public void persistMatch(Match match) {
         matchRepository.save(match);
     }
 
-    public Page<Match> getFinishedMatchesPage(Pageable pageable, MatchSearchRequest matchSearchRequest) throws RepositoryException {
+    public Page<Match> getFinishedMatchesPage(Pageable pageable, MatchSearchRequest matchSearchRequest) {
         List<Match> allMatches;
         if (matchSearchRequest.name() == null || matchSearchRequest.name().isEmpty()) {
             allMatches = matchRepository.getAll();

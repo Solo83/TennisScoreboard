@@ -43,9 +43,8 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public void checkPlayersEquality(PlayerFromRequest player1, PlayerFromRequest player2) throws ValidatorException {
+    public void checkPlayersEquality(PlayerFromRequest player1, PlayerFromRequest player2) {
         if (player1.name().equals(player2.name()))
-        {throw new ValidatorException("Player names can't be equal");
-        }
+        {throw new ValidatorException("Player names can't be equal");}
     }
 }

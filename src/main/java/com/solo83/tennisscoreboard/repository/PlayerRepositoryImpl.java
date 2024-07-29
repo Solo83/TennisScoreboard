@@ -30,7 +30,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    public Optional<Player> getByName(String playerName) throws RepositoryException {
+    public Optional<Player> getByName(String playerName) {
         Optional<Player> player;
         Transaction transaction;
         try (Session session = sessionFactory.openSession()) {
@@ -48,7 +48,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    public List<Player> getAll() throws RepositoryException {
+    public List<Player> getAll(){
         Transaction transaction;
         List<Player> players;
         try (Session session = sessionFactory.openSession()) {
@@ -65,7 +65,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    public Optional<Player> save(Player player) throws RepositoryException {
+    public Optional<Player> save(Player player) {
         Optional<Player> addedPlayer;
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {

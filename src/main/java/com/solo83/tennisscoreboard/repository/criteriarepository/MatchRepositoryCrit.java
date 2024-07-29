@@ -35,7 +35,7 @@ public class MatchRepositoryCrit implements MatchRepository {
     }
 
     @Override
-    public List<Match> getAll() throws RepositoryException {
+    public List<Match> getAll() {
         Transaction transaction;
         List<Match> matches;
         try (Session session = sessionFactory.openSession()) {
@@ -55,7 +55,7 @@ public class MatchRepositoryCrit implements MatchRepository {
         return matches;
     }
 
-    public List<Match> getAllMatchesByPlayerName(String playerName) throws RepositoryException {
+    public List<Match> getAllMatchesByPlayerName(String playerName) {
         Transaction transaction;
         List<Match> matches;
         try (Session session = sessionFactory.openSession()) {
@@ -80,7 +80,7 @@ public class MatchRepositoryCrit implements MatchRepository {
     }
 
     @Override
-    public Optional<Match> save(Match match) throws RepositoryException {
+    public Optional<Match> save(Match match) {
         Optional<Match> addedMatch;
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {

@@ -6,8 +6,6 @@ import com.solo83.tennisscoreboard.dto.PlayerScore;
 import com.solo83.tennisscoreboard.entity.Match;
 import com.solo83.tennisscoreboard.entity.Player;
 import com.solo83.tennisscoreboard.repository.OngoingMatchesRepository;
-import com.solo83.tennisscoreboard.utils.exception.RepositoryException;
-import com.solo83.tennisscoreboard.utils.exception.ValidatorException;
 
 import java.util.UUID;
 
@@ -32,7 +30,7 @@ public class OngoingMatchesService {
         return instance;
     }
 
-    public UUID createNewMatch(String firstPlayerName, String secondPlayerName) throws RepositoryException, ValidatorException {
+    public UUID createNewMatch(String firstPlayerName, String secondPlayerName) {
         PlayerFromRequest player1 = new PlayerFromRequest(firstPlayerName);
         PlayerFromRequest player2 = new PlayerFromRequest(secondPlayerName);
         playerService.checkPlayersEquality(player1, player2);
@@ -54,7 +52,7 @@ public class OngoingMatchesService {
         return ongoingMatchesRepository.get(uuid);
     }
 
-    public void persistMatch(OngoingMatch ongoingMatch) throws RepositoryException {
+    public void persistMatch(OngoingMatch ongoingMatch) {
         Match match = mapper.toMatch(ongoingMatch);
         persistenceService.persistMatch(match);
     }

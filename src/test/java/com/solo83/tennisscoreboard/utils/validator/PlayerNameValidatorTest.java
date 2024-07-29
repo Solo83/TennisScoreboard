@@ -17,7 +17,7 @@ class PlayerNameValidatorTest {
     PlayerNameValidator validator = new PlayerNameValidator();
 
     @Test
-    void PlayerNameWithTwoWordsShouldPassValidation () throws ValidatorException {
+    void PlayerNameWithTwoWordsShouldPassValidation () {
         when(request.getParameterMap()).thenReturn(new HashMap<>() {
             {
                 put("player1", new String[]{"TwoWords Name"});
